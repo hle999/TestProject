@@ -10,6 +10,8 @@
         <item>project_shadows</item>
         <item>project_animator</item>
         <item>project_dictionary_remote_data</item>
+        <item>project_bluetooth</item>
+        <item>project_content_providers</item>
     </string-array>
 
     <string name="project_copy_parentmanager_databases">拷贝家长管理数据库</string>
@@ -20,6 +22,9 @@
     <string name="project_shadows">阴影效果</string>
     <string name="project_animator">动画效果</string>
     <string name="project_dictionary_remote_data">远程调用词典数据</string>
+    <string name="project_bluetooth">蓝牙</string>
+    <string name="project_content_providers">Content Provider</string>
 
-
+    <string name="provider_authority">com.sen.test.testprovider</string>
+    
 </resources>

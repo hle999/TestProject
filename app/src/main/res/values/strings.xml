@@ -59,4 +59,11 @@
     <string name="alert_level_off">Off</string>
     <string name="connected">Connected</string>
     <string name="disconnected">Not Connected</string>
+
+    <string name="button_start_bluetooth">启动蓝牙</string>
+    <string name="button_sure">确定</string>
+    <string name="toast_failed_open_bluetooth">启动蓝牙失败!</string>
+    <string name="toast_has_opened_bluetooth">启动蓝牙失败!</string>
+    <string name="toast_connect_bluetooth_success">启动蓝牙失败!</string>
+    <string name="toast_connect_bluetooth_fail">启动蓝牙失败!</string>
 </resources>

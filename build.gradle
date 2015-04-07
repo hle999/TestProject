@@ -2,9 +2,9 @@
 
 buildscript {
     repositories {
-        maven {
+       /* maven {
             url 'http://192.168.16.115:8081/nexus/content/groups/public/'
-        }
+        }*/
         mavenCentral()
     }
     dependencies {
@@ -17,10 +17,9 @@ buildscript {
 
 allprojects {
     repositories {
-        maven {
+        /*maven {
             url 'http://192.168.16.115:8081/nexus/content/groups/public/'
-        }
-        maven { url "https://repo.eclipse.org/content/groups/releases" }
+        }*/
         mavenCentral()
     }
 }

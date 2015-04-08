@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.QSK.helloble.DeviceListActivity;
+import com.QSK.helloble.HelloBle;
 import com.sen.test.ui.fragment.BaseFragment;
 
 /**
@@ -18,7 +19,7 @@ public class HFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Intent intent = new Intent(getActivity(), DeviceListActivity.class);
+        Intent intent = new Intent(getActivity(), HelloBle.class);
         getActivity().startActivity(intent);
         getFragmentManager().popBackStack();
         return super.onCreateView(inflater, container, savedInstanceState);

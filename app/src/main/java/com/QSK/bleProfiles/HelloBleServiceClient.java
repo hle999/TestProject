@@ -22,9 +22,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.broadcom.bt.le.api.BleCharacteristic;
-import com.broadcom.bt.le.api.BleClientService;
-import com.broadcom.bt.le.api.BleGattID;
+import com.sen.lib.bluetooth.api.BleCharacteristic;
+import com.sen.lib.bluetooth.api.BleClientService;
+import com.sen.lib.bluetooth.api.BleGattID;
 
 public class HelloBleServiceClient extends BleClientService {
     public static String TAG = "HelloBleServiceClient";

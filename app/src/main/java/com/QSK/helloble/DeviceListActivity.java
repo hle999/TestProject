@@ -19,7 +19,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.broadcom.bt.le.api.BleAdapter;
+import com.sen.lib.bluetooth.api.BleAdapter;
 import com.sen.test.R;
 
 import java.util.ArrayList;

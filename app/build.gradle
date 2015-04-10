@@ -36,6 +36,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3'
     //    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile files('libs/aidl_dictionary.jar')
-    compile files('libs/com.broadcom.bt.le.jar')
     compile files('libs/volley-5.0.2.jar')
 }

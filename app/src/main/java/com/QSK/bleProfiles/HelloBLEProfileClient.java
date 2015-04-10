@@ -22,10 +22,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.broadcom.bt.le.api.BleCharacteristic;
-import com.broadcom.bt.le.api.BleClientProfile;
-import com.broadcom.bt.le.api.BleClientService;
-import com.broadcom.bt.le.api.BleGattID;
+import com.sen.lib.bluetooth.api.BleCharacteristic;
+import com.sen.lib.bluetooth.api.BleClientProfile;
+import com.sen.lib.bluetooth.api.BleClientService;
+import com.sen.lib.bluetooth.api.BleGattID;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -63,7 +63,7 @@ public class HelloBLEProfileClient extends BleClientProfile {
     }
     
     public void setUserName(BluetoothDevice device) {
-        BleCharacteristic userNameCharacteristic = 
+        BleCharacteristic userNameCharacteristic =
        		mHelloBleService.getCharacteristic(device, USER_NAME_CHARACTERISTIC);
 		
         if(device != null && userNameCharacteristic != null)

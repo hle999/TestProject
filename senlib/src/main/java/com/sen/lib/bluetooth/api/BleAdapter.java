@@ -1,4 +1,4 @@
-package com.sen.test.bluetooth;
+package com.sen.lib.bluetooth.api;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -9,8 +9,8 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
-import com.broadcom.bt.service.gatt.IBluetoothGatt;
-import com.broadcom.bt.service.gatt.IBluetoothGatt.Stub;
+
+import com.sen.lib.bluetooth.gatt.IBluetoothGatt;
 
 public class BleAdapter {
     private static final String TAG = "BleAdapter";
@@ -171,7 +171,7 @@ public class BleAdapter {
         public void onServiceConnected(ComponentName name, IBinder service) {
             if(service != null) {
                 try {
-                    BleAdapter.this.mService = Stub.asInterface(service);
+                    BleAdapter.this.mService = IBluetoothGatt.Stub.asInterface(service);
                     BleAdapter.this.onInitialized(true);
                 } catch (Throwable var4) {
                     Log.e("BleAdapter", "Unable to get Binder to GattService", var4);

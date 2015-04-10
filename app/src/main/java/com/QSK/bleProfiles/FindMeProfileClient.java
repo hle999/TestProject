@@ -22,12 +22,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.broadcom.bt.le.api.BleCharacteristic;
-import com.broadcom.bt.le.api.BleClientProfile;
-import com.broadcom.bt.le.api.BleClientService;
-import com.broadcom.bt.le.api.BleGattID;
+import com.sen.lib.bluetooth.api.BleCharacteristic;
+import com.sen.lib.bluetooth.api.BleClientProfile;
+import com.sen.lib.bluetooth.api.BleClientService;
+import com.sen.lib.bluetooth.api.BleGattID;
 
 import java.util.ArrayList;
+
 
 public class FindMeProfileClient extends BleClientProfile {
     private static String TAG = "FindMeProfileClient";
@@ -64,7 +65,7 @@ public class FindMeProfileClient extends BleClientProfile {
     }
 
 	public void alert(BluetoothDevice device, byte alertLevel) {
-        BleCharacteristic alertLevelCharacteristic = 
+        BleCharacteristic alertLevelCharacteristic =
                     mImmediateAlertService.getCharacteristic(device, ALERT_LEVEL_CHARACTERISTIC);
 
 		byte value = alertLevel; //{ FindMeProfileClient.ALERT_LEVEL_HIGH };

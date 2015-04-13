@@ -13,6 +13,7 @@
         <item>project_bluetooth</item>
         <item>project_content_providers</item>
         <item>project_socket</item>
+        <item>project_http_download</item>
     </string-array>
 
     <string name="project_copy_parentmanager_databases">拷贝家长管理数据库</string>
@@ -28,5 +29,6 @@
 
     <string name="provider_authority">com.sen.test.testprovider</string>
     <string name="project_socket">socket test</string>
-    
+    <string name="project_http_download">http下载</string>
+
 </resources>

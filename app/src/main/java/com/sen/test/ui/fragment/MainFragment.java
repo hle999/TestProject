@@ -99,6 +99,10 @@ public class MainFragment extends Fragment implements ProjectItemsAdapter.OnItem
                 BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new IFragment(), null);
 
                 break;
+            case R.string.project_http_download:
+                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new JFragment(), null);
+                break;
+
         }
 
     }

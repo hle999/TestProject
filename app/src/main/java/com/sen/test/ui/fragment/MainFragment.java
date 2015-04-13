@@ -94,6 +94,11 @@ public class MainFragment extends Fragment implements ProjectItemsAdapter.OnItem
             case R.string.project_bluetooth:
                 BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new HFragment(), null);
                 break;
+
+            case R.string.project_socket:
+                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new IFragment(), null);
+
+                break;
         }
 
     }

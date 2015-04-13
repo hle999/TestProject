@@ -36,7 +36,7 @@ public class BleAdapter {
          * TODO: fixme!
          */
             // return device.getDeviceType();
-            return 0;
+            return BleAdapter.DEVICE_TYPE_BLE;
         return 0;
     }
 
@@ -47,7 +47,7 @@ public class BleAdapter {
         /**
          * TODO: fixme
          */
-        return false;
+        return true;
         // return adapter.getRemoteServices(deviceAddress);
     }
 

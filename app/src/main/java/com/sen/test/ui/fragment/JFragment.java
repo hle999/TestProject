@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import com.sen.test.R;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -22,16 +24,24 @@ import java.net.URL;
  */
 public class JFragment extends BaseFragment{
 
+    private static final int LOAD_FAILDED = 1;
+
     private String DOWNLOAD_URL = "http://gdown.baidu.com/data/wisegame/332f98a0e4c843c6/biyingcidian_4010.apk";
 
     private TextView textView;
+
+    private String filePath = "/mnt/sdcard/bing.apk";
 
     private Handler handler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
-            if (msg.obj instanceof Integer) {
-                textView.setText(getActivity().getString(R.string.text_progrss)+(Integer)msg.obj+"");
+            if (msg.what != 1) {
+                if (msg.obj instanceof Float) {
+                    textView.setText(getActivity().getString(R.string.text_progrss)+(Float)msg.obj+"");
+                }
+            } else {
+                textView.setText("Time is out");
             }
         }
     };
@@ -58,32 +68,55 @@ public class JFragment extends BaseFragment{
         @Override
         public void run() {
             InputStream inputStream = null;
+            FileOutputStream fileOutputStream = null;
             try {
+                File file = new File(filePath);
+                if (file.exists()) {
+                    file.delete();
+                }
+                file.createNewFile();
+                fileOutputStream = new FileOutputStream(file);
+
                 URL url = new URL(DOWNLOAD_URL);
                 HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
                 httpURLConnection.setReadTimeout(1000);
                 httpURLConnection.setConnectTimeout(1000);
                 httpURLConnection.setRequestMethod("GET");
                 httpURLConnection.setDoInput(true);
+                httpURLConnection .setRequestProperty("Accept-Encoding", "identity");
                 httpURLConnection.connect();
                 int reponse = httpURLConnection.getResponseCode();
-                inputStream = httpURLConnection.getInputStream();
-                int length = inputStream.available();
-                byte[] buffer = new byte[1024];
-                /*while (inputStream.available() > 0) {
-                    inputStream.read(buffer);
-                    float percent = (length-inputStream.available()+0.0f)/length;
-                    sendMessages(0, percent, 0);
-                    Thread.currentThread().sleep(300);
-                }*/
-                sendMessages(0, length, 0);
+                if (reponse == 200) {
+                    byte[] buffer = new byte[1024*10];
+                    inputStream = httpURLConnection.getInputStream();
+                    int length = httpURLConnection.getContentLength()/*inputStream.available()*/;
+                    int progress = 0;
+                    int num = 0;
+                    while ((num = inputStream.read(buffer)) > -1){
+                        progress += num;
+                        fileOutputStream.write(buffer, 0, num);
+                        float percent = (progress+0.0f)/length;
+                        sendMessages(0, percent, 0);
+                        Thread.currentThread().sleep(50);
+                    }
+                } else {
+                    sendMessages(LOAD_FAILDED, null, 0);
+                }
+//                sendMessages(0, length, 0);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            }/* catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
-            } */finally {
+            } finally {
+                if (fileOutputStream != null) {
+                    try {
+                        fileOutputStream.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                 if (inputStream != null) {
                     try {
                         inputStream.close();

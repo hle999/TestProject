@@ -6,6 +6,7 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sen.test.R;
@@ -21,19 +22,24 @@ import java.net.URL;
  */
 public class JFragment extends BaseFragment{
 
-    private String DOWNLOAD_URL = "http://www.baidu.com/link?url=6DUHFi_dnSLw-GK06U5nSrURlAw07PTc94aLoq92O-uQCeJyvHPKiK28cZDGkEQXh0LsngMI2kJgkuS3dfgmW3dO01dflQtA9EuPE5Ozt4kqZ_y4u8Nd1f6w1Ch0d1iT";
+    private String DOWNLOAD_URL = "http://gdown.baidu.com/data/wisegame/332f98a0e4c843c6/biyingcidian_4010.apk";
+
+    private TextView textView;
 
     private Handler handler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
-            Toast.makeText(getActivity(), "Reponse is "+(Integer)msg.obj, Toast.LENGTH_LONG).show();
+            if (msg.obj instanceof Integer) {
+                textView.setText(getActivity().getString(R.string.text_progrss)+(Integer)msg.obj+"");
+            }
         }
     };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_j, null);
+        textView = (TextView)view.findViewById(R.id.textview_percent);
         new DownLoadTread().start();
         return view;
     }
@@ -62,12 +68,22 @@ public class JFragment extends BaseFragment{
                 httpURLConnection.connect();
                 int reponse = httpURLConnection.getResponseCode();
                 inputStream = httpURLConnection.getInputStream();
-                sendMessages(0, reponse, 0);
+                int length = inputStream.available();
+                byte[] buffer = new byte[1024];
+                /*while (inputStream.available() > 0) {
+                    inputStream.read(buffer);
+                    float percent = (length-inputStream.available()+0.0f)/length;
+                    sendMessages(0, percent, 0);
+                    Thread.currentThread().sleep(300);
+                }*/
+                sendMessages(0, length, 0);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
+            }/* catch (InterruptedException e) {
+                e.printStackTrace();
+            } */finally {
                 if (inputStream != null) {
                     try {
                         inputStream.close();

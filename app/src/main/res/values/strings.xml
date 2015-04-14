@@ -31,6 +31,7 @@
     <string name="text_drawer_open">层打开</string>
     <string name="text_drawer_close">层关闭</string>
     <string name="text_qurrey">查询</string>
+    <string name="text_progrss">进度:</string>
 
     <string name="dict_bihua">笔画</string>
     <string name="dict_langwen">朗文</string>

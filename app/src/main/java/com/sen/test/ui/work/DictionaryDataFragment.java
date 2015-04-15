@@ -187,6 +187,14 @@ public class DictionaryDataFragment extends Fragment {
             }
         });
 
+        view.findViewById(R.id.callGrey).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent("com.readboy.Dictionary.GREY_VIEW");
+                getActivity().startActivity(intent);
+            }
+        });
+
         return view;
     }
 

@@ -82,8 +82,8 @@ public class JFragment extends BaseFragment{
                 httpURLConnection.setReadTimeout(1000);
                 httpURLConnection.setConnectTimeout(1000);
                 httpURLConnection.setRequestMethod("GET");
+                httpURLConnection.setRequestProperty("Accept-Encoding", "identity");
                 httpURLConnection.setDoInput(true);
-                httpURLConnection .setRequestProperty("Accept-Encoding", "identity");
                 httpURLConnection.connect();
                 int reponse = httpURLConnection.getResponseCode();
                 if (reponse == 200) {
@@ -102,7 +102,6 @@ public class JFragment extends BaseFragment{
                 } else {
                     sendMessages(LOAD_FAILDED, null, 0);
                 }
-//                sendMessages(0, length, 0);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {

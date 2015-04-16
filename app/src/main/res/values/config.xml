@@ -14,6 +14,7 @@
         <item>project_content_providers</item>
         <item>project_socket</item>
         <item>project_http_download</item>
+        <item>project_scrollview</item>
     </string-array>
 
     <string name="project_copy_parentmanager_databases">拷贝家长管理数据库</string>
@@ -26,6 +27,7 @@
     <string name="project_dictionary_remote_data">远程调用词典数据</string>
     <string name="project_bluetooth">蓝牙</string>
     <string name="project_content_providers">Content Provider</string>
+    <string name="project_scrollview">scrollview</string>
 
     <string name="provider_authority">com.sen.test.testprovider</string>
     <string name="project_socket">socket test</string>

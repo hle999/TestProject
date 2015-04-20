@@ -17,9 +17,13 @@ import android.widget.LinearLayout;
  */
 public class HorizontalItemTab extends HorizontalScrollView implements View.OnClickListener, ViewPager.OnPageChangeListener {
 
+    private static final int DIRECTION_RIGHT = 0x01;
+    private static final int DIRECTION_LEFT = 0x02;
+
     private int tabHeight = 3;
     private int selectItemIndex = 0;
     private float positionPercent = 0;
+    private int direction = DIRECTION_RIGHT;
 
     private Paint tabPaint = null;
 
@@ -32,8 +36,8 @@ public class HorizontalItemTab extends HorizontalScrollView implements View.OnCl
         if (itemTabAdpater != null && viewGroup != null && viewGroup.getChildCount() > selectItemIndex) {
             itemTabAdpater.getView(viewGroup.getChildAt(getSelectItemIndex()), viewGroup, getSelectItemIndex(), selectItemIndex);
             itemTabAdpater.getView(viewGroup.getChildAt(selectItemIndex), viewGroup, selectItemIndex, selectItemIndex);
+            this.selectItemIndex = selectItemIndex;
         }
-        this.selectItemIndex = selectItemIndex;
     }
 
     private ItemTabAdpater itemTabAdpater;
@@ -124,11 +128,34 @@ public class HorizontalItemTab extends HorizontalScrollView implements View.OnCl
     }
 
     public void resetTab(float positionPercent, int itemIndex) {
+        if (positionPercent != 0) {
+            if (this.positionPercent > positionPercent) {
+                direction = DIRECTION_LEFT;
+                itemIndex++;
+            } else if (this.positionPercent < positionPercent) {
+                direction = DIRECTION_RIGHT;
+            }
+        }
+        ViewGroup viewGroup = (ViewGroup)getChildAt(0);
+        if (viewGroup != null && itemIndex > 0 && (viewGroup.getChildCount()-2) > itemIndex) {
+            float tempPositionPercent = positionPercent;
+            if (positionPercent == 0 && direction == DIRECTION_RIGHT) {
+                tempPositionPercent = 1;
+            } else if (this.positionPercent == 0 && direction == DIRECTION_LEFT) {
+                tempPositionPercent = 1;
+            }
+            View currentItem = viewGroup.getChildAt(itemIndex);
+            View nextItem = viewGroup.getChildAt(itemIndex);
+            float currentLeft = currentItem.getLeft();
+            float nextLeft = nextItem.getRight();
+            scrollBy((int) ((nextLeft - currentLeft) * (tempPositionPercent - this.positionPercent)), 0);
+        }
         this.positionPercent = positionPercent;
         if (getSelectItemIndex() != itemIndex) {
             setSelectItemIndex(itemIndex);
         }
         invalidate();
+
     }
 
     @Override
@@ -146,14 +173,25 @@ public class HorizontalItemTab extends HorizontalScrollView implements View.OnCl
             View currentItem = viewGroup.getChildAt(selectItemIndex);
             float currentLeft = currentItem.getLeft();
             float currentRight = currentItem.getRight();
-            if (viewGroup.getChildCount() > (selectItemIndex + 1)) {
-                View nextItem = viewGroup.getChildAt(selectItemIndex + 1);
-                float nextLeft = nextItem.getLeft();
-                float nextRight = nextItem.getRight();
-                currentLeft = currentLeft + (nextLeft - currentLeft) * positionPercent;
-                currentRight = currentRight + (nextRight - currentRight) * positionPercent;
+            if (direction == DIRECTION_RIGHT) {
+                if (viewGroup.getChildCount() > (selectItemIndex + 1)) {
+                    View nextItem = viewGroup.getChildAt(selectItemIndex + 1);
+                    float nextLeft = nextItem.getLeft();
+                    float nextRight = nextItem.getRight();
+                    currentLeft = currentLeft + (nextLeft - currentLeft) * positionPercent;
+                    currentRight = currentRight + (nextRight - currentRight) * positionPercent;
+                }
+            } else if (direction == DIRECTION_LEFT) {
+                if ((selectItemIndex - 1) > 0 && positionPercent != 0) {
+                    View nextItem = viewGroup.getChildAt(selectItemIndex - 1);
+                    float nextLeft = nextItem.getLeft();
+                    float nextRight = nextItem.getRight();
+                    currentLeft = currentLeft + (nextLeft - currentLeft) * (1 - positionPercent);
+                    currentRight = currentRight + (nextRight - currentRight) * (1 - positionPercent);
+                }
             }
             canvas.drawRect(currentLeft, getHeight() - tabHeight, currentRight, getHeight(), tabPaint);
+
         }
     }
 

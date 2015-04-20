@@ -31,7 +31,7 @@ public class KFragment extends BaseFragment {
             public View getView(View v, ViewGroup container, int postion, int selectIndex) {
                 if (v == null) {
                     v = new TextView(container.getContext());
-                    ((TextView) v).setText(" TheNihgt ");
+                    ((TextView) v).setText(" TheNihgt "+postion);
                 }
                 if (container.indexOfChild(v) != selectIndex) {
                     ((TextView) v).setTextColor(Color.BLACK);

@@ -102,6 +102,9 @@ public class MainFragment extends Fragment implements ProjectItemsAdapter.OnItem
             case R.string.project_http_download:
                 BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new JFragment(), null);
                 break;
+            case R.string.project_scrollview:
+                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new KFragment(), null);
+                break;
 
             case R.string.project_scroll_item:
                 BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new KFragment(), null);

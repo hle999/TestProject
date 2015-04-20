@@ -32,6 +32,7 @@ public class KFragment extends BaseFragment {
                 if (v == null) {
                     v = new TextView(container.getContext());
                     ((TextView) v).setText(" TheNihgt "+postion);
+                    ((TextView) v).setTextSize(50);
                 }
                 if (container.indexOfChild(v) != selectIndex) {
                     ((TextView) v).setTextColor(Color.BLACK);
@@ -43,7 +44,7 @@ public class KFragment extends BaseFragment {
 
             @Override
             public int getCount() {
-                return 50;
+                return 20;
             }
         });
         viewPager.addPagerChangeListener(horizontalScrollView);
@@ -64,7 +65,7 @@ public class KFragment extends BaseFragment {
 
         @Override
         public int getCount() {
-            return 10;
+            return 20;
         }
     }
 }

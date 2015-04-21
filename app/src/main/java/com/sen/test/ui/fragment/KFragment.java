@@ -29,7 +29,24 @@ public class KFragment extends BaseFragment {
 
             @Override
             public void onScroll(ViewGroup container, int position, float positionOffset) {
-
+                if (container != null) {
+                    View currentView = container.getChildAt(position);
+                    int lf = (int)(0xf*(1-positionOffset));
+                    int hf = lf;
+                    hf = hf << 4;
+                    int f = hf + lf;
+                    int color = Color.rgb(f, f, f);
+                    ((TextView)currentView).setTextColor(color);
+                    if (container.getChildCount() > position+1) {
+                        View nextView = container.getChildAt(position+1);
+                        int lf1 = (int)(0xf*positionOffset);
+                        int hf1 = lf1;
+                        hf1 = hf1 << 4;
+                        int f1 = hf1 + lf1;
+                        int color1 = Color.rgb(f1, f1, f1);
+                        ((TextView)nextView).setTextColor(color1);
+                    }
+                }
             }
 
             @Override
@@ -38,12 +55,13 @@ public class KFragment extends BaseFragment {
                     v = new TextView(container.getContext());
                     ((TextView) v).setText(" TheNihgt "+postion);
                     ((TextView) v).setTextSize(50);
+                    v.setBackgroundColor(Color.BLUE);
                 }
-                if (container.indexOfChild(v) != selectIndex) {
+                /*if (container.indexOfChild(v) != selectIndex) {
                     ((TextView) v).setTextColor(Color.BLACK);
                 } else {
                     ((TextView) v).setTextColor(Color.BLUE);
-                }
+                }*/
                 return v;
             }
 

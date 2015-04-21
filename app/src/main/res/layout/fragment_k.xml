@@ -6,7 +6,7 @@
     android:clickable="true"
     android:background="@color/white">
 
-    <com.sen.lib.view.BaseItemTab
+    <com.sen.lib.view.HorizontalItemTab
         android:id="@+id/scroll_items"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

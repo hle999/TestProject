@@ -170,10 +170,10 @@ public class HorizontalItemTab extends HorizontalScrollView implements View.OnCl
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        resetTab(positionOffset, position);
         if (itemTabAdpater != null) {
             itemTabAdpater.onScroll((ViewGroup)getChildAt(0), position, positionOffset);
         }
+        resetTab(positionOffset, position);
     }
 
     @Override

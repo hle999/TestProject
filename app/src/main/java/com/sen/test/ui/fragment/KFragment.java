@@ -5,16 +5,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.sen.lib.support.CustomViewPager;
+import com.sen.lib.view.HorizontalItemTab;
 import com.sen.lib.view.ItemTabAdpater;
 import com.sen.test.R;
-import com.sen.lib.view.HorizontalItemTab;
 
 /**
  * Created by Administrator on 15-4-20.
@@ -27,6 +26,12 @@ public class KFragment extends BaseFragment {
         CustomViewPager viewPager = (CustomViewPager)view.findViewById(R.id.scroll_viewpager);
         final HorizontalItemTab horizontalScrollView = (HorizontalItemTab)view.findViewById(R.id.scroll_items);
         horizontalScrollView.setAdpater(new ItemTabAdpater() {
+
+            @Override
+            public void onScroll(ViewGroup container, int position, float positionOffset) {
+
+            }
+
             @Override
             public View getView(View v, ViewGroup container, int postion, int selectIndex) {
                 if (v == null) {

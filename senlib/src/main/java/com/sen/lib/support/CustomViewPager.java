@@ -12,11 +12,11 @@ import java.util.List;
  */
 public class CustomViewPager extends ViewPager{
 
-    private List<OnPageChangeListener> listenerList;
+    private List<ViewPager.OnPageChangeListener> listenerList;
 
-    public void addPagerChangeListener(OnPageChangeListener listener) {
+    public void addPagerChangeListener(ViewPager.OnPageChangeListener listener) {
         if (listenerList == null) {
-            listenerList = new ArrayList<OnPageChangeListener>();
+            listenerList = new ArrayList<ViewPager.OnPageChangeListener>();
         }
         listenerList.add(listener);
     }
@@ -32,7 +32,7 @@ public class CustomViewPager extends ViewPager{
     }
 
     @Override
-    public void setOnPageChangeListener(OnPageChangeListener listener) {
+    public void setOnPageChangeListener(ViewPager.OnPageChangeListener listener) {
 
     }
 
@@ -46,12 +46,12 @@ public class CustomViewPager extends ViewPager{
     }
 
     private void setOnPageChangeListener() {
-        super.setOnPageChangeListener(new OnPageChangeListener() {
+        super.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 if (listenerList != null) {
-                    for (OnPageChangeListener listener:listenerList) {
+                    for (ViewPager.OnPageChangeListener listener : listenerList) {
                         listener.onPageScrolled(position, positionOffset, positionOffsetPixels);
                     }
                 }
@@ -60,7 +60,7 @@ public class CustomViewPager extends ViewPager{
             @Override
             public void onPageSelected(int position) {
                 if (listenerList != null) {
-                    for (OnPageChangeListener listener:listenerList) {
+                    for (ViewPager.OnPageChangeListener listener : listenerList) {
                         listener.onPageSelected(position);
                     }
                 }
@@ -69,15 +69,11 @@ public class CustomViewPager extends ViewPager{
             @Override
             public void onPageScrollStateChanged(int state) {
                 if (listenerList != null) {
-                    for (OnPageChangeListener listener:listenerList) {
+                    for (ViewPager.OnPageChangeListener listener : listenerList) {
                         listener.onPageScrollStateChanged(state);
                     }
                 }
             }
         });
     }
-
-
-
-
 }

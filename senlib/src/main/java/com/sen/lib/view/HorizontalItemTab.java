@@ -13,9 +13,10 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 /**
- * Created by Administrator on 15-4-20.
+ * Created by Administrator on 15-4-21.
  */
 public class HorizontalItemTab extends HorizontalScrollView implements View.OnClickListener, ViewPager.OnPageChangeListener {
+
     private static final int UNINVALUE = -1;
 
     private int tabHeight = 3;
@@ -170,6 +171,9 @@ public class HorizontalItemTab extends HorizontalScrollView implements View.OnCl
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         resetTab(positionOffset, position);
+        if (itemTabAdpater != null) {
+            itemTabAdpater.onScroll((ViewGroup)getChildAt(0), position, positionOffset);
+        }
     }
 
     @Override

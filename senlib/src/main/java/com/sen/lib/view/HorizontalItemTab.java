@@ -19,11 +19,12 @@ public class HorizontalItemTab extends HorizontalScrollView implements View.OnCl
 
     private static final int UNINVALUE = -1;
 
-    private int tabHeight = 3;
-    private int selectItemIndex = 0;
-    private float positionPercent = 0;
-
+    private int tabHeight = 2;
     private int tabIndex = 0;
+    private int tabWidth = 0;
+    private int selectItemIndex = 0;
+
+    private float positionPercent = 0;
 
     private Paint tabPaint = null;
 
@@ -51,6 +52,28 @@ public class HorizontalItemTab extends HorizontalScrollView implements View.OnCl
         reset();
     }
 
+    public int getTabHeight() {
+        return tabHeight;
+    }
+
+    public void setTabHeight(int tabHeight) {
+        this.tabHeight = tabHeight;
+    }
+
+    public int getTabWidth() {
+        return tabWidth;
+    }
+
+    public void setTabWidth(int tabWidth) {
+        this.tabWidth = tabWidth;
+    }
+
+    public void setTabColor(int color) {
+        if (tabPaint != null) {
+            tabPaint.setColor(color);
+        }
+    }
+
     public HorizontalItemTab(Context context) {
         super(context);
     }
@@ -70,7 +93,7 @@ public class HorizontalItemTab extends HorizontalScrollView implements View.OnCl
         setWillNotDraw(false);
 
         tabPaint = new Paint();
-        tabPaint.setColor(Color.BLUE);
+        tabPaint.setColor(Color.BLACK);
 
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -128,9 +151,9 @@ public class HorizontalItemTab extends HorizontalScrollView implements View.OnCl
     }
 
     public void resetTab(float positionPercent, int tabIndex) {
-        ViewGroup viewGroup = (ViewGroup)getChildAt(0);
-        if (viewGroup != null && tabIndex > 0 && (viewGroup.getChildCount()-1) > tabIndex) {
-            View currentItem = viewGroup.getChildAt(tabIndex-1);
+        ViewGroup viewGroup = (ViewGroup) getChildAt(0);
+        if (viewGroup != null && tabIndex > 0 && (viewGroup.getChildCount() - 1) > tabIndex) {
+            View currentItem = viewGroup.getChildAt(tabIndex - 1);
             float currentLeft = currentItem.getLeft();
             float currentWidth = currentItem.getWidth();
             scrollTo((int) (currentLeft + currentWidth * positionPercent), 0);
@@ -156,10 +179,23 @@ public class HorizontalItemTab extends HorizontalScrollView implements View.OnCl
             View currentItem = viewGroup.getChildAt(tabIndex);
             float currentLeft = currentItem.getLeft();
             float currentRight = currentItem.getRight();
+            int currentItemWidth = (int) (currentRight - currentLeft);
+            if (currentItemWidth > tabWidth) {
+                int currentMargin = (currentItemWidth - tabWidth) / 2;
+                currentLeft = currentLeft + currentMargin;
+                currentRight = currentRight - currentMargin;
+            }
+
             if (viewGroup.getChildCount() > (tabIndex + 1)) {
                 View nextItem = viewGroup.getChildAt(tabIndex + 1);
                 float nextLeft = nextItem.getLeft();
                 float nextRight = nextItem.getRight();
+                int nextItemWidth = (int) (nextRight - nextLeft);
+                if (nextItemWidth > tabWidth) {
+                    int nextMargin = (nextItemWidth - tabWidth) / 2;
+                    nextLeft = nextLeft + nextMargin;
+                    nextRight = nextRight - nextMargin;
+                }
                 currentLeft = currentLeft + (nextLeft - currentLeft) * positionPercent;
                 currentRight = currentRight + (nextRight - currentRight) * positionPercent;
             }
@@ -171,7 +207,7 @@ public class HorizontalItemTab extends HorizontalScrollView implements View.OnCl
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         if (itemTabAdpater != null) {
-            itemTabAdpater.onScroll((ViewGroup)getChildAt(0), position, positionOffset);
+            itemTabAdpater.onScroll((ViewGroup) getChildAt(0), position, positionOffset);
         }
         resetTab(positionOffset, position);
     }

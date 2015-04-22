@@ -34,6 +34,11 @@ public class MainFragment extends Fragment implements ProjectItemsAdapter.OnItem
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        return init(inflater);
+    }
+
+    private View init(LayoutInflater inflater) {
         final View view = inflater.inflate(R.layout.fragment_main, null);
         final RecyclerView recyclerView = (RecyclerView)view.findViewById(R.id.project_items_list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -43,39 +48,24 @@ public class MainFragment extends Fragment implements ProjectItemsAdapter.OnItem
         ProjectItemsAdapter projectItemsAdapter = new ProjectItemsAdapter();
         recyclerView.setAdapter(projectItemsAdapter);
         projectItemsAdapter.setOnItemSelectLinstener(this);
-        List<String> data = new ArrayList<>();
+        /*List<String> data = new ArrayList<>();
         String projectItems[] = getActivity().getResources().getStringArray(R.array.project_items);
         for (String item:projectItems) {
             data.add(item);
         }
         projectItemsAdapter.setData(data);
-        projectItemsAdapter.notifyDataSetChanged();
-        ((EditText)view.findViewById(R.id.passworld)).addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (new String("ccc").contentEquals(s+"")) {
-                    ((EditText)view.findViewById(R.id.passworld)).removeTextChangedListener(this);
-                    recyclerView.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
+        projectItemsAdapter.notifyDataSetChanged();*/
+        selectItem(R.string.project_dictionary_remote_data);
         return view;
     }
 
     @Override
     public void selectItem(String label, int position) {
-
         int id = getActivity().getResources().getIdentifier(label, "string", getActivity().getPackageName());
+        selectItem(id);
+    }
+
+    public void selectItem(int id) {
 
         switch (id) {
 

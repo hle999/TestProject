@@ -3,6 +3,7 @@ package com.sen.lib.support;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,17 @@ import java.util.List;
  */
 public class CustomViewPager extends ViewPager{
 
+    private boolean scrollAble=true;
+
     private List<ViewPager.OnPageChangeListener> listenerList;
+
+    public boolean isScrollAble() {
+        return scrollAble;
+    }
+
+    public void setScrollAble(boolean scrollAble) {
+        this.scrollAble = scrollAble;
+    }
 
     public void addPagerChangeListener(ViewPager.OnPageChangeListener listener) {
         if (listenerList == null) {
@@ -34,6 +45,14 @@ public class CustomViewPager extends ViewPager{
     @Override
     public void setOnPageChangeListener(ViewPager.OnPageChangeListener listener) {
 
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (!scrollAble) {
+            return true;
+        }
+        return super.onTouchEvent(ev);
     }
 
     @Override

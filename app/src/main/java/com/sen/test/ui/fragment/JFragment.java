@@ -18,6 +18,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Administrator on 15-4-13.
@@ -30,7 +33,8 @@ public class JFragment extends BaseFragment{
 
     private TextView textView;
 
-    private String filePath = "/mnt/sdcard/bing.apk";
+    private String dirPath = "/mnt/sdcard/";
+    private String fileName;
 
     private Handler handler = new Handler() {
 
@@ -70,7 +74,11 @@ public class JFragment extends BaseFragment{
             InputStream inputStream = null;
             FileOutputStream fileOutputStream = null;
             try {
-                File file = new File(filePath);
+                Date date = new Date();
+                date.setTime(System.currentTimeMillis());
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyMMdd.HHmmss");
+                fileName = simpleDateFormat.format(date)+".apk.temp";
+                File file = new File(dirPath+"/"+fileName);
                 if (file.exists()) {
                     file.delete();
                 }

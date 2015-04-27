@@ -48,14 +48,14 @@ public class MainFragment extends Fragment implements ProjectItemsAdapter.OnItem
         ProjectItemsAdapter projectItemsAdapter = new ProjectItemsAdapter();
         recyclerView.setAdapter(projectItemsAdapter);
         projectItemsAdapter.setOnItemSelectLinstener(this);
-        /*List<String> data = new ArrayList<>();
+        List<String> data = new ArrayList<>();
         String projectItems[] = getActivity().getResources().getStringArray(R.array.project_items);
         for (String item:projectItems) {
             data.add(item);
         }
         projectItemsAdapter.setData(data);
-        projectItemsAdapter.notifyDataSetChanged();*/
-        selectItem(R.string.project_dictionary_remote_data);
+        projectItemsAdapter.notifyDataSetChanged();
+//        selectItem(R.string.project_dictionary_remote_data);
         return view;
     }
 

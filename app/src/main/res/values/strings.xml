@@ -17,6 +17,7 @@
     <string name="button_receive">获取</string>
     <string name="button_play">发音</string>
     <string name="button_bihua">笔画</string>
+    <string name="button_retry">重试</string>
     <string name="text_wifi_enabling">WIFI连接中</string>
     <string name="text_wifi_enabled">WIFI已连接</string>
     <string name="text_wifi_disabling">WIFI连接中</string>

@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -196,8 +197,9 @@ public class JFragment extends BaseFragment implements View.OnClickListener {
         private boolean breakPoint(File outFile, int range) {
             HttpURLConnection httpURLConnection = null;
             InputStream internetInputStream = null;
-            FileOutputStream fileOutputStream = null;
-            BufferedOutputStream bufferedOutputStream = null;
+            /*FileOutputStream fileOutputStream = null;
+            BufferedOutputStream bufferedOutputStream = null;*/
+            RandomAccessFile randomAccessFile = null;
             try {
                 URL url = new URL(DOWNLOAD_URL);
                 httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -211,9 +213,9 @@ public class JFragment extends BaseFragment implements View.OnClickListener {
 
                 int reponse = httpURLConnection.getResponseCode();
                 System.out.println("BreakPoint......0: "+reponse);
-                if (reponse == 200) {
+                if (reponse == 206) {
                     byte[] buffer = new byte[1024 * 10];
-                    int downLoadFileLength = httpURLConnection.getContentLength();
+                    int totalLength = httpURLConnection.getContentLength();
                     internetInputStream = httpURLConnection.getInputStream();
                     byte[] vertification = new byte[OFFSET];
                     FileInputStream fileInputStream = new FileInputStream(outFile);
@@ -228,12 +230,16 @@ public class JFragment extends BaseFragment implements View.OnClickListener {
                     }
                     int progress = (int)outFile.length();
                     int num = 0;
-                    fileOutputStream = new FileOutputStream(outFile);
+                    totalLength += progress;
+                    /*fileOutputStream = new FileOutputStream(outFile);
                     bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+                    bufferedOutputStream.write(buffer, progress, 0);*/
+                    randomAccessFile = new RandomAccessFile(outFile.getAbsoluteFile(), "rw");
+                    randomAccessFile.seek(progress);
                     while ((num = internetInputStream.read(buffer)) > 0) {
                         progress += num;
-                        bufferedOutputStream.write(buffer, 0, num);
-                        float percent = (progress + 0.0f) / downLoadFileLength;
+                        randomAccessFile.write(buffer, 0, num);
+                        float percent = (progress + 0.0f) / totalLength;
                         sendMessages(LOAD_ING, percent, 0);
                         Thread.currentThread().sleep(50);
                     }
@@ -250,7 +256,7 @@ public class JFragment extends BaseFragment implements View.OnClickListener {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
-                try {
+                /*try {
                     if (bufferedOutputStream != null) {
                         bufferedOutputStream.flush();
                         bufferedOutputStream.close();
@@ -262,6 +268,14 @@ public class JFragment extends BaseFragment implements View.OnClickListener {
                 try {
                     if (fileOutputStream != null) {
                         fileOutputStream.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }*/
+
+                try {
+                    if (randomAccessFile != null) {
+                        randomAccessFile.close();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

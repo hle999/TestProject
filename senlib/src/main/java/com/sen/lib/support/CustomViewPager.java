@@ -11,9 +11,9 @@ import java.util.List;
 /**
  * Created by Administrator on 15-4-20.
  */
-public class CustomViewPager extends ViewPager{
+public class CustomViewPager extends ViewPager {
 
-    private boolean scrollAble=true;
+    private boolean scrollAble = true;
 
     private List<ViewPager.OnPageChangeListener> listenerList;
 
@@ -57,10 +57,11 @@ public class CustomViewPager extends ViewPager{
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent arg0) {
-        if (!scrollAble)
+        if (!scrollAble) {
             return false;
-        else
+        } else {
             return super.onInterceptTouchEvent(arg0);
+        }
     }
 
     @Override

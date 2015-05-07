@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Editor: sgc
@@ -64,6 +66,7 @@ public class HFragment extends BaseFragment implements AdapterView.OnItemClickLi
                 } else if (action.contentEquals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)) {
 
                 } else if (action.contentEquals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
+                    System.out.println("BLE bond change!");
                     BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     if (bluetoothDevice != null) {
                         switch (bluetoothDevice.getBondState()) {
@@ -138,20 +141,24 @@ public class HFragment extends BaseFragment implements AdapterView.OnItemClickLi
             BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
             BluetoothDevice bluetoothDevice = BluetoothAdapter.
                     getDefaultAdapter().getRemoteDevice(bleDeviceInfoList.get(position).address);
-            try {
+            if (bluetoothDevice.getBondState() == BluetoothDevice.BOND_NONE) {
+                try {
 
-                Method creMethod = BluetoothDevice.class
-                        .getMethod("createBond");
-                creMethod.invoke(bluetoothDevice);
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                    Method creMethod = BluetoothDevice.class
+                            .getMethod("createBond");
+                    creMethod.setAccessible(true);
+                    creMethod.invoke(bluetoothDevice);
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            } else if (bluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
+                ConnectBLE connectBLE = new ConnectBLE(bluetoothDevice);
+                connectBLE.start();
             }
-            /*ConnectBLE connectBLE = new ConnectBLE(bluetoothDevice);
-            connectBLE.start();*/
         }
     }
 
@@ -192,6 +199,7 @@ public class HFragment extends BaseFragment implements AdapterView.OnItemClickLi
 
     private class ConnectBLE extends Thread {
 
+        private boolean isConnected = false;
         private BluetoothDevice device;
 
         ConnectBLE(BluetoothDevice device) {
@@ -200,27 +208,45 @@ public class HFragment extends BaseFragment implements AdapterView.OnItemClickLi
 
         @Override
         public void run() {
+            int time=0;
+            while (!connect()) {
+                if (isConnected) {
+                    break;
+                }
+                if (time > 3) {
+                    break;
+                }
+                time++;
+            }
+        }
+
+        private boolean connect() {
             BluetoothSocket bluetoothSocket=null;
             try {
+                /*int sdk = Integer.parseInt(Build.VERSION.SDK);
+                if (sdk >= 10) {
+                    bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(UUID.randomUUID());
+                } else {
+                    bluetoothSocket =  device.createRfcommSocketToServiceRecord(UUID.randomUUID());
+                }*/
 //                    bluetoothSocket = device.createRfcommSocketToServiceRecord(UUID.randomUUID());
                 Method m = device.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
                 m.setAccessible(true);
                 bluetoothSocket = (BluetoothSocket)m.invoke(device, 2);
+                if (bluetoothSocket != null) {
+                    bluetoothSocket.connect();
+                    isConnected = true;
+                }
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            if (bluetoothSocket != null) {
-                try {
-                    bluetoothSocket.connect();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            return isConnected;
         }
     }
 

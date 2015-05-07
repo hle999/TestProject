@@ -34,7 +34,7 @@ import java.util.List;
  * Editor: sgc
  * Date: 2015/04/06
  */
-public class HFragment extends BaseFragment implements AdapterView.OnItemSelectedListener{
+public class HFragment extends BaseFragment implements AdapterView.OnItemClickListener{
 
     private static final int RESULT_CODE = 100;
     private static final int REQUEST_CODE = 35;
@@ -97,7 +97,7 @@ public class HFragment extends BaseFragment implements AdapterView.OnItemSelecte
         listView = (ListView) view.findViewById(R.id.listview);
         BLEAdapter bleAdapter = new BLEAdapter();
         listView.setAdapter(bleAdapter);
-        listView.setOnItemSelectedListener(this);
+        listView.setOnItemClickListener(this);
         bleDeviceInfoList = new ArrayList<>();
         toast = new Toast(getActivity());
         toast.setDuration(Toast.LENGTH_LONG);
@@ -132,8 +132,7 @@ public class HFragment extends BaseFragment implements AdapterView.OnItemSelecte
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (bleDeviceInfoList != null &&
                 bleDeviceInfoList.size() > position) {
             BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
@@ -154,11 +153,6 @@ public class HFragment extends BaseFragment implements AdapterView.OnItemSelecte
             /*ConnectBLE connectBLE = new ConnectBLE(bluetoothDevice);
             connectBLE.start();*/
         }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
     }
 
     private class BLEAdapter extends BaseAdapter {

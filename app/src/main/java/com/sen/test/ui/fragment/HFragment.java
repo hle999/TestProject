@@ -1,5 +1,6 @@
 package com.sen.test.ui.fragment;
 
+import android.bluetooth.BluetoothA2dp;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -10,6 +11,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.ParcelUuid;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +42,7 @@ public class HFragment extends BaseFragment implements AdapterView.OnItemClickLi
 
     private static final int RESULT_CODE = 100;
     private static final int REQUEST_CODE = 35;
+    private static final String MY_UUID = "0000110b-0000-1000-8000-00805f9b34fb";
 
     private List<BLEDeviceInfo> bleDeviceInfoList;
     private ListView listView;
@@ -58,6 +61,24 @@ public class HFragment extends BaseFragment implements AdapterView.OnItemClickLi
                         BLEDeviceInfo bleDeviceInfo = new BLEDeviceInfo();
                         bleDeviceInfo.name = discoverDevice.getName();
                         bleDeviceInfo.address = discoverDevice.getAddress();
+                        System.out.println("sgc name: "+bleDeviceInfo.name);
+                        try {
+                            Method method = discoverDevice.getClass().getMethod("getUuids", null);
+                            ParcelUuid[] phoneUuids = (ParcelUuid[]) method.invoke(discoverDevice, null);
+                            if (phoneUuids != null) {
+                                bleDeviceInfo.uuid = phoneUuids[0].getUuid();
+                                for (ParcelUuid parcelUuid:phoneUuids) {
+                                    System.out.println("sgc: "+parcelUuid.getUuid().toString());
+                                }
+                            }
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        } catch (NoSuchMethodException e) {
+                            e.printStackTrace();
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+
                         bleDeviceInfoList.add(bleDeviceInfo);
                         if (listView != null && listView.getAdapter() != null) {
                             ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
@@ -138,7 +159,7 @@ public class HFragment extends BaseFragment implements AdapterView.OnItemClickLi
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (bleDeviceInfoList != null &&
                 bleDeviceInfoList.size() > position) {
-            BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
+//            BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
             BluetoothDevice bluetoothDevice = BluetoothAdapter.
                     getDefaultAdapter().getRemoteDevice(bleDeviceInfoList.get(position).address);
             if (bluetoothDevice.getBondState() == BluetoothDevice.BOND_NONE) {
@@ -156,7 +177,7 @@ public class HFragment extends BaseFragment implements AdapterView.OnItemClickLi
                     e.printStackTrace();
                 }
             } else if (bluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
-                ConnectBLE connectBLE = new ConnectBLE(bluetoothDevice);
+                ConnectBLE connectBLE = new ConnectBLE(bluetoothDevice, bleDeviceInfoList.get(position).uuid);
                 connectBLE.start();
             }
         }
@@ -201,9 +222,15 @@ public class HFragment extends BaseFragment implements AdapterView.OnItemClickLi
 
         private boolean isConnected = false;
         private BluetoothDevice device;
+        private UUID uuid;
 
         ConnectBLE(BluetoothDevice device) {
             this.device = device;
+        }
+
+        ConnectBLE(BluetoothDevice device, UUID uuid) {
+            this.device = device;
+            this.uuid = uuid;
         }
 
         @Override
@@ -213,7 +240,7 @@ public class HFragment extends BaseFragment implements AdapterView.OnItemClickLi
                 if (isConnected) {
                     break;
                 }
-                if (time > 3) {
+                if (time > 10) {
                     break;
                 }
                 time++;
@@ -223,27 +250,32 @@ public class HFragment extends BaseFragment implements AdapterView.OnItemClickLi
         private boolean connect() {
             BluetoothSocket bluetoothSocket=null;
             try {
-                /*int sdk = Integer.parseInt(Build.VERSION.SDK);
+                int sdk = Build.VERSION.SDK_INT;
+                System.out.println("sdk: "+sdk);
                 if (sdk >= 10) {
-                    bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(UUID.randomUUID());
+                    bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(/*UUID.randomUUID()*/uuid);
+                    /*Method m = device.getClass().getMethod("createInsecureRfcommSocket", new Class[]{int.class});
+                    m.setAccessible(true);
+                    bluetoothSocket = (BluetoothSocket)m.invoke(device, 2);
+                    */
                 } else {
-                    bluetoothSocket =  device.createRfcommSocketToServiceRecord(UUID.randomUUID());
-                }*/
-//                    bluetoothSocket = device.createRfcommSocketToServiceRecord(UUID.randomUUID());
-                Method m = device.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
-                m.setAccessible(true);
-                bluetoothSocket = (BluetoothSocket)m.invoke(device, 2);
+                    bluetoothSocket =  device.createRfcommSocketToServiceRecord(/*UUID.randomUUID()*/uuid);
+                    /*Method m = device.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
+                    m.setAccessible(true);
+                    bluetoothSocket = (BluetoothSocket)m.invoke(device, 2);
+                    */
+                }
                 if (bluetoothSocket != null) {
                     bluetoothSocket.connect();
                     isConnected = true;
                 }
-            } catch (NoSuchMethodException e) {
+            } /*catch (NoSuchMethodException e) {
                 e.printStackTrace();
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
-            } catch (IOException e) {
+            }*/ catch (IOException e) {
                 e.printStackTrace();
             }
             return isConnected;
@@ -253,5 +285,6 @@ public class HFragment extends BaseFragment implements AdapterView.OnItemClickLi
     private class BLEDeviceInfo {
         String name;
         String address;
+        UUID uuid;
     }
 }

@@ -3,6 +3,7 @@ package com.sen.test.ui.fragment;
 import android.bluetooth.BluetoothA2dp;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothProfile;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -147,6 +148,24 @@ public class HFragment extends BaseFragment implements AdapterView.OnItemClickLi
 
     private void openBle() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        Method[] methods = BluetoothAdapter.class.getDeclaredMethods();
+        for (Method method:methods) {
+            System.out.println("sss "+method.getName());
+        }
+        try {
+            Method m = BluetoothAdapter.class.getDeclaredMethod("getUuids");
+            for (ParcelUuid u: (ParcelUuid[]) m.invoke(bluetoothAdapter) ) {
+                System.out.println("local support: "+u.getUuid().toString());
+            }
+
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+//        bluetoothAdapter.getProfileProxy(getActivity(), this, BluetoothProfile.HEADSET);
         if (!bluetoothAdapter.isEnabled()) {
             Intent intentEnabler = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(intentEnabler, REQUEST_CODE);

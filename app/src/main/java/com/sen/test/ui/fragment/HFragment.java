@@ -40,7 +40,8 @@ import java.util.UUID;
  * Date: 2015/04/06
  */
 public class HFragment extends BaseFragment implements AdapterView.OnItemClickListener{
-
+    /*bintray.user=andy2888
+    bintray.apikey=3c559ec18d1c07e0dcadda5c56cf2fff0430abb6*/
     private static final int RESULT_CODE = 100;
     private static final int REQUEST_CODE = 35;
     private static final String MY_UUID = "0000110b-0000-1000-8000-00805f9b34fb";

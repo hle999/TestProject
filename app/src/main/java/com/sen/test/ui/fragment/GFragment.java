@@ -1,4 +1,4 @@
-package com.test.ui.fragment;
+package com.sen.test.ui.fragment;
 
 import android.content.ContentValues;
 import android.database.Cursor;

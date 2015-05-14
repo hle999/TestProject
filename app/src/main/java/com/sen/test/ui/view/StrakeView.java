@@ -1,17 +1,22 @@
 package com.sen.test.ui.view;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
+import android.view.ContextMenu;
 import android.view.View;
+import android.widget.ProgressBar;
 
+import com.sen.test.R;
 import com.sen.test.util.RoundRectDrawableWithShadow;
 
 /**
  * Editor: sgc
  * Date: 2015/03/13
  */
-public class StrakeView extends View {
+public class StrakeView extends View{
 
     public StrakeView(Context context) {
         super(context);
@@ -27,14 +32,28 @@ public class StrakeView extends View {
     }
 
     private void init() {
-        RoundRectDrawableWithShadow roundRectDrawableWithShadow =
-                new RoundRectDrawableWithShadow(this.getResources(), Color.RED, 10.0f, 10.0f, 10.0f);
-        setBackground(roundRectDrawableWithShadow);
+
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         init();
+        ((Activity)getContext()).registerForContextMenu(this);
+        ProgressBar progressBar = new ProgressBar(getContext());
+        System.out.println("progressBar: "+progressBar.getMax());
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        ((Activity)getContext()).unregisterForContextMenu(this);
+        super.onDetachedFromWindow();
+    }
+
+    @Override
+    protected void onCreateContextMenu(ContextMenu menu) {
+        System.out.println("View context menu!");
+        ((Activity)getContext()).getMenuInflater().inflate(R.menu.main, menu);
+        super.onCreateContextMenu(menu);
     }
 }

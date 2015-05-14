@@ -14,4 +14,9 @@
         android:scrollbars="vertical"
         />
 
+    <com.sen.test.ui.view.StrakeView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"/>
+
 </FrameLayout>

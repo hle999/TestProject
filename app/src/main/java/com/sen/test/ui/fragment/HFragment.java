@@ -64,8 +64,8 @@ public class HFragment extends BaseFragment implements AdapterView.OnItemClickLi
                         bleDeviceInfo.address = discoverDevice.getAddress();
                         System.out.println("sgc name: "+bleDeviceInfo.name);
                         try {
-                            Method method = discoverDevice.getClass().getMethod("getUuids", null);
-                            ParcelUuid[] phoneUuids = (ParcelUuid[]) method.invoke(discoverDevice, null);
+                            Method method = discoverDevice.getClass().getMethod("getUuids");
+                            ParcelUuid[] phoneUuids = (ParcelUuid[]) method.invoke(discoverDevice);
                             if (phoneUuids != null) {
                                 bleDeviceInfo.uuid = phoneUuids[0].getUuid();
                                 for (ParcelUuid parcelUuid:phoneUuids) {

@@ -5,9 +5,9 @@ package com.sen.test.provider;
  * Editor: sgc
  * Date: 2015/04/06
  */
-public class TestTable {
+public class TestTable1 {
 
-    public static final String TABLE_NAME = "text_table";
+    public static final String TABLE_NAME = "text_table1";
     public static final String ID = "_id";
     public static final String NAME = "name";
     public static final String MESSAGE = "msg";

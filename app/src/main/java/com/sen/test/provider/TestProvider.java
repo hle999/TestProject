@@ -32,14 +32,17 @@ public class TestProvider extends ContentProvider {
         sqLiteOpenHelper = new TestSQLDatabase(getContext(), TABLE_NAME, null, VERSION);
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         String authority = getContext().getString(R.string.provider_authority);
-        uriMatcher.addURI(authority, TestTable.TABLE_NAME, 1);
-        uriMatcher.addURI(authority, TestTable.TABLE_NAME+"/#", 2);
+        uriMatcher.addURI(authority, TestTable1.TABLE_NAME, 1);
+        uriMatcher.addURI(authority, TestTable1.TABLE_NAME+"/#", 2);
+        uriMatcher.addURI(authority, TestTable2.TABLE_NAME, 3);
+        uriMatcher.addURI(authority, TestTable2.TABLE_NAME+"/#", 4);
         return true;
     }
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteDatabase db = sqLiteOpenHelper.getReadableDatabase();
+        System.out.println("Querry: "+uri.getLastPathSegment());
         String tableName = getTable(uri);
         Cursor cursor = db.query(tableName, projection, selection, selectionArgs, null, null, sortOrder);
         return cursor;
@@ -78,7 +81,10 @@ public class TestProvider extends ContentProvider {
 
             case 1:
             case 2:
-                return TestTable.TABLE_NAME;
+                return TestTable1.TABLE_NAME;
+            case 3:
+            case 4:
+                return TestTable2.TABLE_NAME;
             default:
 
         }
@@ -98,12 +104,14 @@ public class TestProvider extends ContentProvider {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL(TestTable.CREATE_TABLE_COMMAND);
+            db.execSQL(TestTable1.CREATE_TABLE_COMMAND);
+            db.execSQL(TestTable2.CREATE_TABLE_COMMAND);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL(TestTable.CREATE_TABLE_COMMAND);
+            db.execSQL(TestTable1.CREATE_TABLE_COMMAND);
+            db.execSQL(TestTable2.CREATE_TABLE_COMMAND);
         }
     }
 }

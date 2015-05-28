@@ -23,14 +23,6 @@ public class MainActivity extends FragmentActivity {
 //        bt.addToBackStack(null);
         bt.add(R.id.content, fragment);
         bt.commit();
-
-        String str = "d";
-        byte[] bytes = str.getBytes();
-        System.out.println("count: "+bytes.length);
-        for (byte b:bytes) {
-            System.out.println("b: "+b+" "+Integer.toHexString(b & 0xFF) +" "+ Integer.toHexString((b & 0xFF) | 0x100)  + " " +
-                    Integer.toHexString((b & 0xFF) | 0x100).substring(1, 3) + " " + Integer.toHexString((b & 0xFF) | 0x100).length());
-        }
     }
 
 }

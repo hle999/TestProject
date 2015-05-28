@@ -82,6 +82,10 @@ public class GFragment extends BaseFragment {
         }
     }
 
+    private void input(int a, int b, int c) {
+        System.out.println("Querry...: "+a+" "+b+" "+c);
+    }
+
     private class ProviderThread extends Thread {
 
         static final int MSG_1 = 1;
@@ -96,13 +100,16 @@ public class GFragment extends BaseFragment {
         @Override
         public void run() {
 
-            switch (type) {
-                case MSG_1:
-                    querry1(1,2,3);
-                    break;
-                case MSG_2:
-                    querry2(4,5,6);
-                    break;
+            for (int i=0;i<100;i++) {
+
+                switch (type) {
+                    case MSG_1:
+                        input(1, 2, 3);
+                        break;
+                    case MSG_2:
+                        input(4,5,6);
+                        break;
+                }
             }
 
         }

@@ -124,6 +124,9 @@ public class MainFragment extends Fragment implements ProjectItemsAdapter.OnItem
                 BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new KFragment(), null);
                 break;
 
+            case R.string.project_video_play:
+                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new LFragment(), null);
+                break;
         }
 
     }

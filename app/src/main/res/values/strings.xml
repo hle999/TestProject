@@ -68,4 +68,8 @@
     <string name="toast_has_opened_bluetooth">启动蓝牙失败!</string>
     <string name="toast_connect_bluetooth_success">启动蓝牙失败!</string>
     <string name="toast_connect_bluetooth_fail">启动蓝牙失败!</string>
+
+    <string name="video_play">播放</string>
+    <string name="video_pause">暂停</string>
+    <string name="video_stop">停止</string>
 </resources>

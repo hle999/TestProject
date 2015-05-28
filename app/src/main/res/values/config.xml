@@ -15,6 +15,7 @@
         <item>project_socket</item>
         <item>project_http_download</item>
         <item>project_scroll_item</item>
+        <item>project_video_play</item>
     </string-array>
 
     <string name="project_copy_parentmanager_databases">拷贝家长管理数据库</string>
@@ -33,5 +34,6 @@
     <string name="project_socket">socket test</string>
     <string name="project_http_download">http下载</string>
     <string name="project_scroll_item">ScrollView Item</string>
+    <string name="project_video_play">Video Play</string>
 
 </resources>

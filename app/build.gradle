@@ -12,11 +12,11 @@ android {
         versionName "1.0"
     }
 
-    sourceSets {
+    /*sourceSets {
         sen {
             java.srcDirs = ['src/sen/java']
         }
-    }
+    }*/
 
     buildTypes {
         release {
@@ -26,7 +26,11 @@ android {
     }
 }
 
+def aaVersion = '3.2';
+
 dependencies {
+//    apt "org.androidannotations:androidannotations:${aaVersion}"
+    compile "org.androidannotations:androidannotations-api:${aaVersion}"
     compile project(':senlib')
     compile 'com.android.support:support-v4:21.+'
     compile 'com.android.support:palette-v7:21.+'
@@ -34,7 +38,19 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:21.+'
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.google.code.gson:gson:2.3'
+//    compile 'org.roboguice:roboguice:1.1'
+    compile ('com.google.inject:guice:2.0')
     //    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile files('libs/aidl_dictionary.jar')
     compile files('libs/volley-5.0.2.jar')
 }
+
+
+
+/*
+apt {
+    arguments {
+        androidManifestFile variant.outputs[0].processResources.manifestFile
+        resourcePackageName android.defaultConfig.applicationId
+    }
+}*/

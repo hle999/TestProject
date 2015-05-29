@@ -116,7 +116,7 @@ public class PageTextView extends View {
         /**
          * 硬件加速第一种方式
          */
-        this.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+//        this.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
         /**
          * 硬件加速第二种方式
@@ -155,18 +155,15 @@ public class PageTextView extends View {
 
     @Override
     public void onDraw(Canvas canvas) {
-        /*if (lineInfoList != null && lineInfoList.size() > 0) {
+        if (lineInfoList != null && lineInfoList.size() > 0) {
             for (int i=start;i<(start+offset+1);i++) {
                 drawLine(canvas, verticalY, lineInfoList.get(i));
             }
-        }*/
-//        Log.i("RecyclerViewText", "drawing... "+this.toString());
-        if (cacheBitmap != null) {
-            canvas.drawBitmap(cacheBitmap, 0, 0, null);
         }
-        paint.setTextSize(50);
-        Canvas bufferCanvas = new Canvas();
-        bufferCanvas.drawText("hellp woo!", 0, 100, paint);
+//        Log.i("RecyclerViewText", "drawing... "+this.toString());
+        /*if (cacheBitmap != null) {
+            canvas.drawBitmap(cacheBitmap, 0, 0, null);
+        }*/
     }
 
     private void drawCache() {

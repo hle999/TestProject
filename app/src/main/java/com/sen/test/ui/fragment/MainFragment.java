@@ -129,7 +129,7 @@ public class MainFragment extends Fragment implements ProjectItemsAdapter.OnItem
                 break;
 
             case R.string.project_inject:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new MFragment(), null);
+                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new MFragment_(), null);
 
                 break;
         }

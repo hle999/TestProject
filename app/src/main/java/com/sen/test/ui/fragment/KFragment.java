@@ -28,17 +28,17 @@ public class KFragment extends BaseFragment {
         horizontalScrollView.setAdpater(new ItemTabAdpater() {
 
             @Override
-            public void onScroll(ViewGroup container, int position, float positionOffset) {
-                if (container != null) {
-                    View currentView = container.getChildAt(position);
+            public void onScroll(int position, float positionOffset) {
+                if (horizontalScrollView.getItemView(position) != null) {
+                    View currentView = horizontalScrollView.getItemView(position);
                     int lf = (int)(0xf*(1-positionOffset));
                     int hf = lf;
                     hf = hf << 4;
                     int f = hf + lf;
                     int color = Color.rgb(f, f, f);
                     ((TextView)currentView).setTextColor(color);
-                    if (container.getChildCount() > position+1) {
-                        View nextView = container.getChildAt(position+1);
+                    if (horizontalScrollView.getItemView(position+1) != null) {
+                        View nextView = horizontalScrollView.getItemView(position+1);
                         int lf1 = (int)(0xf*positionOffset);
                         int hf1 = lf1;
                         hf1 = hf1 << 4;
@@ -47,6 +47,11 @@ public class KFragment extends BaseFragment {
                         ((TextView)nextView).setTextColor(color1);
                     }
                 }
+            }
+
+            @Override
+            public void onScrolledStateChange(int state) {
+
             }
 
             @Override

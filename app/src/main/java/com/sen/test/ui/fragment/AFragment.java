@@ -93,14 +93,16 @@ public class AFragment extends Fragment implements View.OnClickListener{
         switch (v.getId()) {
 
             case R.id.start:
-                progressBar.setVisibility(View.VISIBLE);
+                /*progressBar.setVisibility(View.VISIBLE);
                 tip.setVisibility(View.VISIBLE);
                 tip.setText(R.string.tip_copying);
                 tip.setTextColor(Color.BLACK);
                 v.setVisibility(View.GONE);
                 ActionThread actionThread = new ActionThread();
-                actionThread.start();
-
+                actionThread.start();*/
+                if (fragmentClick != null) {
+                    fragmentClick.onClick();
+                }
                  break;
 
         }
@@ -160,5 +162,15 @@ public class AFragment extends Fragment implements View.OnClickListener{
             }
         }
 
+    }
+
+    private FragmentClick fragmentClick;
+
+    public void setClick(FragmentClick fragmentClick) {
+        this.fragmentClick = fragmentClick;
+    }
+
+    public interface FragmentClick {
+        public void onClick();
     }
 }

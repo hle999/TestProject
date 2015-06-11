@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.sen.lib.support.CustomViewPager;
 import com.sen.lib.view.BaseItemAdapter;
 import com.sen.lib.view.HorizontalItemTab;
-import com.sen.lib.view.HorizontalItemTabAdapter;
+import com.sen.lib.view.ItemTabAdapter;
 import com.sen.lib.view.VerticalScrollWidget;
 import com.sen.test.R;
 
@@ -82,7 +82,7 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
 
         horizontalScrollView = (HorizontalItemTab) view.findViewById(R.id.scroll_items);
         horizontalScrollView.getItemGroup().setBackgroundColor(Color.BLUE);
-        horizontalScrollView.setAdapter(new HorizontalItemTabAdapter() {
+        horizontalScrollView.setAdapter(new ItemTabAdapter() {
 
             @Override
             public void onScroll(int position, float positionOffset) {

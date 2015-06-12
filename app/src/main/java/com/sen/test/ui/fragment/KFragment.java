@@ -182,7 +182,7 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
         @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
-            System.out.println("drawing... "+getText());
+//            System.out.println("drawing... "+getText());
         }
     }
 }

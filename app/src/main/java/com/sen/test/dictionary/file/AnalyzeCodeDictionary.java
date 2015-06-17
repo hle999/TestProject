@@ -43,8 +43,13 @@ public class AnalyzeCodeDictionary extends Thread {
 
     public void setStop() {
         if (imlAnalyze != null) {
+            imlAnalyze.setObtainer(null);
             imlAnalyze.stop();
         }
+    }
+
+    public ImlAnalyze getImlAnalyze() {
+        return imlAnalyze;
     }
 
     @Override

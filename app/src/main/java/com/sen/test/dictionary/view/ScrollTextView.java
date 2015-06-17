@@ -79,10 +79,10 @@ public class ScrollTextView extends LinearLayout {
         }
     }
 
-    public ScrollTextView(Context context, AttributeSet attrs, int defStyle) {
+    /*public ScrollTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         // TODO Auto-generated constructor stub
-    }
+    }*/
 
     private void init(Context mContext) {
         this.mContext = mContext;
@@ -137,6 +137,24 @@ public class ScrollTextView extends LinearLayout {
         this.textPaddingRight = textPaddingRight;
     }
 
+    public void setText(final ImlAnalyze<ICharsAnalysisObtainer> imlAnalyze, final int textSize, int changeTextSizeLine, int changeLineTextSize) {
+        this.changeTextSizeLine = changeTextSizeLine;
+        this.changeLineTextSize = changeLineTextSize;
+        /**
+         * View有可能正在初始化，长宽都为0，放入消息队列，等初始完再执行
+         */
+        if (currentViewWidth == 0 || currentViewHeight == 0) {
+            this.post(new Runnable() {
+                @Override
+                public void run() {
+                    setText(imlAnalyze, textSize);
+                }
+            });
+        } else {
+            setText(imlAnalyze, textSize);
+        }
+    }
+
     public void showText(final ImlAnalyze<TextObtainer> imlAnalyze, final int textSize, int changeTextSizeLine, int changeLineTextSize) {
         this.changeTextSizeLine = changeTextSizeLine;
         this.changeLineTextSize = changeLineTextSize;
@@ -155,23 +173,71 @@ public class ScrollTextView extends LinearLayout {
         }
     }
 
-    /*private void showText(ImlAnalyze<TextObtainer> imlAnalyze, int textSize) {
+    private void setText(ImlAnalyze<ICharsAnalysisObtainer> imlAnalyze, int textSize) {
         stopAllViewAnalyzeThread();
-        RecyclerCustomTextView dictTextView = new RecyclerCustomTextView(getContext());
+        View dictTextView = new CustomTextView(getContext());
+        ((ITextContrler)dictTextView).setOnDictTextViewListener(new CustomTextView.DictTextViewListener() {
+
+            @Override
+            public void onAttachedPageToWindow() {
+                /**
+                 * 只能含有唯一个子view，把多余的都清除
+                 * 注意: 快速点击可能产生多个子view,所以要把最近之前的View都清除
+                 */
+                while ((getChildCount() - 1) > 0) {
+                    ITextContrler cv = (ITextContrler) getChildAt(0);
+                    ScrollTextView.this.removeViewAt(0);
+                    cv.setOnDictTextViewListener(null);
+                    cv.onResume();
+                    cv.stop();
+//                    cView.removeAllViews();
+                }
+
+            }
+
+            @Override
+            public void onSizeChanged(View parentView) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void onSelectText(String selectText) {
+                // TODO Auto-generated method stub
+                if (onScrollTextViewListener != null) {
+                    onScrollTextViewListener.getSelectText(selectText);
+                }
+            }
+
+            @Override
+            public void touchedView() {
+                if (onScrollTextViewListener != null) {
+                    onScrollTextViewListener.touchedView();
+                }
+            }
+
+            @Override
+            public void childOnDraw(int scrollY, int viewWidth, int viewHeight, int height) {
+                if (onScrollTextViewChildDrawListener != null) {
+                    onScrollTextViewChildDrawListener.childOnDraw(scrollY, viewWidth, viewHeight, height);
+                }
+            }
+
+        });
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         this.addView(dictTextView, params);
+        ((ITextContrler)dictTextView).setSelectTextState(isSelectText);
 
         TextParse textParse = new TextParse();
-        textParse.setTextSize(textSize+0.0f);
-        textParse.setViewSize(currentViewWidth-textPaddingRight, currentViewHeight);
+        textParse.setTextSize(textSize + 0.0f);
+        textParse.setViewSize(currentViewWidth - textPaddingRight, currentViewHeight);
         textParse.setChangeLineTextSize(changeTextSizeLine, changeLineTextSize);
 
-        imlAnalyze.setObtainer(textParse);
+//        imlAnalyze.setObtainer(textParse);
 
         AnalyzeCodeDictionary newAnalyzeDictThread = new AnalyzeCodeDictionary(imlAnalyze);
-        dictTextView.loadData(newAnalyzeDictThread, textParse);
-    }*/
+        ((ITextContrler)dictTextView).loadData(newAnalyzeDictThread, textParse);
+    }
 
     private void showText(ImlAnalyze<TextObtainer> imlAnalyze, int textSize) {
         stopAllViewAnalyzeThread();
@@ -229,8 +295,8 @@ public class ScrollTextView extends LinearLayout {
         ((ITextContrler)dictTextView).setSelectTextState(isSelectText);
 
         TextParse textParse = new TextParse();
-        textParse.setTextSize(textSize+0.0f);
-        textParse.setViewSize(currentViewWidth-textPaddingRight, currentViewHeight);
+        textParse.setTextSize(textSize + 0.0f);
+        textParse.setViewSize(currentViewWidth - textPaddingRight, currentViewHeight);
         textParse.setChangeLineTextSize(changeTextSizeLine, changeLineTextSize);
 
         imlAnalyze.setObtainer(textParse);

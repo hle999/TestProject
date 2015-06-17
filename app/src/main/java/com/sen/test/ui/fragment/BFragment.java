@@ -6,12 +6,16 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.sen.lib.view.VerticalScrollWidget;
 import com.sen.test.R;
 import com.sen.test.dictionary.analyze.NormalAnalyze;
+import com.sen.test.dictionary.analyze.TestNormalAnalyze;
 import com.sen.test.dictionary.io.DictFile;
 import com.sen.test.dictionary.search.DictWordSearch;
 import com.sen.test.dictionary.view.ScrollTextView;
+import com.sen.test.dictionary.widget.TextScrollView;
 
 /**
  * Editor: sgc
@@ -20,6 +24,7 @@ import com.sen.test.dictionary.view.ScrollTextView;
 public class BFragment extends Fragment implements View.OnClickListener{
 
     private ScrollTextView scrollTextView;
+    private TextScrollView textScrollView;
     private DictWordSearch dictWordSearch;
     private int wordIndex=0;
     private String keyWord;
@@ -35,15 +40,25 @@ public class BFragment extends Fragment implements View.OnClickListener{
         View view = inflater.inflate(R.layout.fragment_b, null);
         view.findViewById(R.id.previous).setOnClickListener(this);
         view.findViewById(R.id.next).setOnClickListener(this);
-        scrollTextView = (ScrollTextView)view.findViewById(R.id.text_show);
+        if (view.findViewById(R.id.text_show) instanceof ScrollTextView) {
+
+            scrollTextView = (ScrollTextView)view.findViewById(R.id.text_show);
+        } else {
+            textScrollView = (TextScrollView)view.findViewById(R.id.text_show);
+        }
         dictWordSearch = new DictWordSearch();
         dictWordSearch.open(DictFile.ID_LWDICT);
         wordIndex = dictWordSearch.getSearchKeyIndex("go");
         keyWord = dictWordSearch.getKeyWord(wordIndex);
         byte[] exp = dictWordSearch.getExplainByte(wordIndex);
-        NormalAnalyze normalAnalyze = new NormalAnalyze(exp, dictWordSearch.getExplainByteStart(exp), keyWord, false);
-        scrollTextView.showText(normalAnalyze, 30, -1, -1);
-
+        int start = dictWordSearch.getExplainByteStart(exp);
+        for (int i=0;i<start;i++) {
+            exp[i] = 0;
+        }
+//        TestNormalAnalyze normalAnalyze = new TestNormalAnalyze(exp, dictWordSearch.getExplainByteStart(exp), keyWord, false);
+//        scrollTextView.showText(normalAnalyze, 30, -1, -1);
+        textScrollView.setTextSize(30);
+        textScrollView.setText(exp);
         return view;
     }
 

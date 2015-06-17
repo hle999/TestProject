@@ -11,6 +11,9 @@ import com.google.inject.Inject;
 import com.sen.test.ui.fragment.BaseFragment;
 import com.sen.test.ui.fragment.MainFragment;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * Created by Administrator on 14-12-12.
  */
@@ -31,7 +34,17 @@ public class MainActivity extends BaseActivity {
         bt.add(R.id.content, fragment);
         bt.commit();
 
-        System.out.println("Activity Print: " + context);
+        /*try {
+            String yourShellInput = "busybox am force-stop com.sen.test";  // or whatever ...
+            String[] commandAndArgs = new String[]{ "/bin/sh", "-c", yourShellInput };
+            Process process = Runtime.getRuntime().exec(yourShellInput);
+            InputStream inputStream = process.getInputStream();
+            byte[] bytes = new byte[inputStream.available()];
+            inputStream.read(bytes);
+            System.out.println("printss: " + new String(bytes));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
     }
 
 }

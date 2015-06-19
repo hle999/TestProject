@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.sen.test.dictionary.info.LineInfo;
 import com.sen.test.dictionary.info.LineTextInfo;
 import com.sen.test.dictionary.parse.TextParse;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 public class PageTextView extends View {
@@ -67,7 +69,7 @@ public class PageTextView extends View {
          * resolve method:
          *  主动打开硬件加速
          */
-        openHardwareAccelerated();
+//        openHardwareAccelerated();
     }
 
     public void reset(List<LineInfo> lineInfoList, int start, int offset, int width, int height, int verticalY) {
@@ -90,7 +92,7 @@ public class PageTextView extends View {
          */
 //        openHardwareAccelerated();
 
-        ViewGroup.LayoutParams layoutParams = getLayoutParams();
+        /*ViewGroup.LayoutParams layoutParams = getLayoutParams();
         if (layoutParams == null) {
             layoutParams = new ViewGroup.LayoutParams(width, height);
             setLayoutParams(layoutParams);
@@ -100,7 +102,7 @@ public class PageTextView extends View {
                 layoutParams.height = height;
                 setLayoutParams(layoutParams);
             }
-        }
+        }*/
 
     }
 
@@ -122,7 +124,7 @@ public class PageTextView extends View {
         /**
          * 硬件加速第二种方式
          */
-        /*try {
+        try {
             Field mLayerType = View.class.getDeclaredField("mLayerType");
             mLayerType.setAccessible(true);
             mLayerType.set(this, View.LAYER_TYPE_HARDWARE);
@@ -134,7 +136,7 @@ public class PageTextView extends View {
             e.printStackTrace();
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
-        }*/
+        }
 
     }
 
@@ -157,8 +159,9 @@ public class PageTextView extends View {
     @Override
     public void onDraw(Canvas canvas) {
         if (lineInfoList != null && lineInfoList.size() > 0) {
+            int startY = lineInfoList.get(start).y;
             for (int i=start;i<(start+offset+1);i++) {
-                drawLine(canvas, verticalY, lineInfoList.get(i));
+                drawLine(canvas, startY, lineInfoList.get(i));
             }
         }
 //        Log.i("RecyclerViewText", "drawing... "+this.toString());

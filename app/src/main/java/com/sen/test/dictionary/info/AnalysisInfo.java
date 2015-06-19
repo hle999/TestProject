@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Sen on 2015/6/15.
+ * Created by Sgc on 2015/6/15.
  */
 public class AnalysisInfo {
 

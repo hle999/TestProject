@@ -74,45 +74,36 @@ public class TestNormalAnalyze extends TestBaseAnalyze{
                 startIndex = i;
             }  else if (value == RICHEDIT_SETCOLOR) {
                 if (length > (i+2)) {
-                    if(byteBuffer[i+2] == 0) {// 设置前面文本的颜色
-                        addText(analysisInfo, byteBuffer, startIndex, (i + 3) - startIndex, colorIndex, defalutColor, false);
-                        startIndex = i+2;
+                    if(byteBuffer[i+2] == BLANK_AREA) {// 设置前面文本的颜色
+                        addText(analysisInfo, byteBuffer, startIndex, i - startIndex, colorIndex, defalutColor, false);
+                        startIndex = i + 3;
                         colorIndex = DcitTextColorInfo.COLOR_LIST[0];// 初始化黑色
                     } else {
-                        addText(analysisInfo, byteBuffer, startIndex, (i + 1) - startIndex, colorIndex, defalutColor, false);
+                        addText(analysisInfo, byteBuffer, startIndex, i - startIndex, colorIndex, defalutColor, false);
                         colorIndex = byteBuffer[i+2];
                         colorIndex = DcitTextColorInfo.COLOR_LIST[colorIndex];
-                        startIndex = i;
+                        startIndex = i + 3;
                     }
-
-                    byteBuffer[i] = BLANK_AREA;
-                    if (length > (i+1)) {
-                        byteBuffer[i+1] = BLANK_AREA;// 置为空域
-                    }
-                    if (length > (i+2)) {
-                        byteBuffer[i+2] = BLANK_AREA;
-                    }
-
                     i += 2;
                 } else {
-                    byteBuffer[i] = BLANK_AREA;
+                    /*byteBuffer[i] = BLANK_AREA;
                     if (length > (i+1)) {
                         byteBuffer[i+1] = BLANK_AREA;// 置为空域
                     }
                     if (length > (i+2)) {
                         byteBuffer[i+2] = BLANK_AREA;
-                    }
+                    }*/
                 }
             } else if (value == 0xFE) {// 判断音标,注意可能是汉字
                 value = byteBuffer[++i]&0xff;
                 if(value == 0xBB) {		// 换行
-                    addText(analysisInfo, byteBuffer, startIndex, (i + 1) - startIndex, colorIndex, defalutColor, true);
                     byteBuffer[i-1] = BLANK_AREA;//置为空域
                     byteBuffer[i] = BLANK_AREA;
-                    startIndex = i+1;
+                    addText(analysisInfo, byteBuffer, startIndex, i - startIndex, colorIndex, defalutColor, true);
+                    startIndex = i + 1;
                 } else if (value >= 0x50 && mSymbolList.length > (value-0x50) && mSymbolList[value-0x50] != 0) {
-                    byteBuffer[i-1] = YINBIAO_AREA;
-                    byteBuffer[i] = YINBIAO_AREA;
+                    byteBuffer[i-1] = BLANK_AREA;
+                    byteBuffer[i] = BLANK_AREA;
                     addText(analysisInfo, byteBuffer, startIndex, i - startIndex, colorIndex, defalutColor, false);
                     addText(analysisInfo, PhoneticUtils.checkDefineChar(mSymbolList[value - 0x50]), colorIndex, defalutColor);
                     startIndex = i + 1;
@@ -131,18 +122,30 @@ public class TestNormalAnalyze extends TestBaseAnalyze{
         setObtainer(null);
     }
 
-    private void addText(AnalysisInfo analysisInfo, byte[] bytes, int start, int end,
+    private void addText(AnalysisInfo analysisInfo, byte[] bytes, int start, int offset,
                          int color, int defaultColor, boolean isNewLine) {
         if (bytes != null) {
             char[] chars = null;
             try {
 
-                String str = new String(bytes, start, end, DictIOFile.DECODE_GB2312);
+                String str = new String(bytes, start, offset, DictIOFile.DECODE_GB2312);
                 chars = str.toCharArray();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
             if (chars != null && chars.length > 0) {
+                /*int length = chars.length;
+                for (int i=0;i < length;i++) {
+                    if (chars[i] == RICHEDIT_SETCOLOR) {
+                        chars[i] = BLANK_AREA;
+                        if (length > (i+1)) {
+                            chars[i+1] = BLANK_AREA;// 置为空域
+                        }
+                        if (length > (i+2)) {
+                            chars[i+2] = BLANK_AREA;
+                        }
+                    }
+                }*/
                 if (color != defaultColor) {
                     analysisInfo.colorMap.put(analysisInfo.charList.size(), color);
                 }

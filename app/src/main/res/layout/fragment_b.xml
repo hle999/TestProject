@@ -13,7 +13,10 @@
     <com.sen.test.dictionary.widget.TextScrollView
         android:id="@+id/text_show"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:scrollbars="vertical"/>
 
     <!--<com.sen.test.dictionary.view.ScrollTextView
         android:id="@+id/text_show"

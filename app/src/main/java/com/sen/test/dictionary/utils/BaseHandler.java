@@ -7,7 +7,7 @@ import android.os.Message;
 import java.lang.ref.WeakReference;
 
 /**
- * Created by Sen on 2015/6/16.
+ * Created by Sgc on 2015/6/16.
  */
 public class BaseHandler<T> extends Handler {
 

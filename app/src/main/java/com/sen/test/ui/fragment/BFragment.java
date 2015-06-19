@@ -55,10 +55,15 @@ public class BFragment extends Fragment implements View.OnClickListener{
         for (int i=0;i<start;i++) {
             exp[i] = 0;
         }
-//        TestNormalAnalyze normalAnalyze = new TestNormalAnalyze(exp, dictWordSearch.getExplainByteStart(exp), keyWord, false);
-//        scrollTextView.showText(normalAnalyze, 30, -1, -1);
-        textScrollView.setTextSize(30);
-        textScrollView.setText(exp);
+
+        if (view.findViewById(R.id.text_show) instanceof ScrollTextView) {
+            NormalAnalyze normalAnalyze = new NormalAnalyze(exp, 0, keyWord, false);
+            scrollTextView.showText(normalAnalyze, 30, -1, -1);
+        } else {
+
+            textScrollView.setTextSize(30);
+            textScrollView.setText(exp);
+        }
         return view;
     }
 

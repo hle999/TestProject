@@ -8,9 +8,9 @@ import com.sen.test.dictionary.widget.TextScrollView;
 import java.util.List;
 
 /**
- * Created by Sen on 2015/6/17.
+ * Created by Sgc on 2015/6/17.
  */
-public class ParaseWorker extends Thread implements ICharsParaseObtainer<String, List<CharsInfo>, Float, TextScrollView.TextHandler> {
+public class ParaseWorker extends Thread implements ICharsParaseObtainer<TextScrollView.TextHandler, String, List<CharsInfo>, Float, Float> {
 
     private TextScrollView.TextHandler textHandler;
     private CharsParase charsParase;
@@ -25,10 +25,10 @@ public class ParaseWorker extends Thread implements ICharsParaseObtainer<String,
     }
 
     @Override
-    public void getParaseResult(String tag, List<CharsInfo> charsInfos, Float height) {
+    public void getParaseResult(String tag, List<CharsInfo> charsInfos, Float height, Float width) {
         if (textHandler != null) {
             textHandler.sendMessages(TextScrollView.TextHandler.PARARSE_CHARS,
-                    tag, charsInfos, (int)height.floatValue(), 0, 0);
+                    tag, charsInfos, (int)height.floatValue(), (int)width.floatValue(), 0);
         }
     }
 

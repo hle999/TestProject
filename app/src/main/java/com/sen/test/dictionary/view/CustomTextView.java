@@ -1047,7 +1047,6 @@ public class CustomTextView extends ScrollView implements ITextContrler{
             int offset = lineInfoList.size()-1;
             int height = lineInfoList.get(offset).y + lineInfoList.get(offset).height - lineInfoList.get(0).y;
             resultLineInfoList.addAll(lineInfoList);
-
             PageTextView dictPageText = new PageTextView(getContext(), resultLineInfoList, start, offset);
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(getWidth(), height);
             textLayout.addView(dictPageText, params);

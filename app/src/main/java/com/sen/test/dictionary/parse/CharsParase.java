@@ -4,7 +4,6 @@ import android.graphics.Paint;
 
 import com.sen.test.dictionary.info.AnalysisInfo;
 import com.sen.test.dictionary.info.CharsInfo;
-import com.sen.test.dictionary.io.DictIOFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +14,12 @@ import java.util.Map;
  */
 public class CharsParase {
 
+    public final static int UN_INVALUE = -1;
+
     private float mScreenWidth;
     private float mScreenHeight;
     private int mTextSize;
-    private int changeLine = -1;
+    private int changeLine = UN_INVALUE;
     private int changeTextSize = 0;
 
     private AnalysisInfo analysisInfo;
@@ -43,23 +44,32 @@ public class CharsParase {
     }
 
     public void start() {
+        parase();
+    }
+
+    public void parase() {
         if (analysisInfo != null) {
             Paint mPaint = new Paint();
             float h = mPaint.getFontMetrics().bottom - mPaint.getFontMetrics().top;
             mPaint.setTextSize(mTextSize);
             mPaint.setSubpixelText(true);
-            if (analysisInfo.charList != null) {
-                String tag = analysisInfo.toString();
-                int num = 0;
+            if (analysisInfo.charList != null && iObtainer != null) {
+                String tag = iObtainer.toString();
+                Map textSizeMap = analysisInfo.colorMap;
+                Map newLineMap = analysisInfo.newLineMap;
+                List<Object> objects = analysisInfo.charList;
+                int number = objects.size();
                 int line = 0;
                 float textWidth = 0.0f;
                 float textHeight = 0.0f;
-                Map textSizeMap = analysisInfo.colorMap;
-                Map newLineMap = analysisInfo.newLineMap;
                 float[] measureWidth = new float[1];
-                for (Object obj : analysisInfo.charList) {
-                    if (resetPaint(mPaint, textSizeMap, num, line) ) {
+                for (int ii = 0 ; ii < number ; ii++) {
+                    if (resetPaint(mPaint, textSizeMap, ii, line) ) {
                         h = mPaint.getFontMetrics().bottom - mPaint.getFontMetrics().top;
+                    }
+                    Object obj = null;
+                    if (objects != null) {
+                        obj = objects.get(ii);
                     }
                     if (obj != null) {
                         if (obj instanceof char[]) {
@@ -68,14 +78,19 @@ public class CharsParase {
                             int leave = length;
                             int start = 0;
                             while (leave != 0) {
-                                int offset = mPaint.breakText(chars, start, leave,
-                                        mScreenWidth - textWidth, measureWidth);
+                                int offset = UN_INVALUE;
+                                if (chars != null) {
+                                    offset = mPaint.breakText(chars, start, leave,
+                                            mScreenWidth - textWidth, measureWidth);
+                                } else {
+                                    break;
+                                }
                                 if (offset > 0) {
                                     int end = start + offset - 1;
                                     int sufIndex = sufMatchSymbol(chars, end);
                                     if (sufIndex > end) {
                                         int preIndex = preMatchSymbol(chars, end);
-                                        addCharsInfoToList(num, start,
+                                        addCharsInfoToList(ii, start,
                                                 preIndex - start, textWidth, textHeight);
                                         start = preIndex;
                                         leave = length - start;
@@ -87,13 +102,13 @@ public class CharsParase {
                                             textHeight = 0.0f;
                                         }
                                     } else {
-                                        addCharsInfoToList(num, start,
+                                        addCharsInfoToList(ii, start,
                                                 end + 1 - start, textWidth, textHeight);
                                         textWidth += measureWidth[0];
                                         start = end + 1;
                                         leave = length - start;
                                     }
-                                } else {
+                                } else if (offset != UN_INVALUE){
                                     textHeight += h;
                                     textWidth = 0.0f;
                                     if (textHeight >= mScreenHeight) {
@@ -104,8 +119,14 @@ public class CharsParase {
                                 }
                             }
                         } else if (obj instanceof Character) {
-                            char c = (char)obj;
-                            measureWidth[0] = mPaint.measureText(c+"");
+                            char c = ' ';
+                            try {
+                                c = (char)obj;
+                                measureWidth[0] = mPaint.measureText(c+"");
+                            } catch (ClassCastException e) {
+                                e.printStackTrace();
+                                break;
+                            }
                             if (textWidth + measureWidth[0] > mScreenWidth) {
                                 textHeight += h;
                                 textWidth = measureWidth[0];
@@ -115,16 +136,16 @@ public class CharsParase {
                                     charsInfoList = null;
                                     textHeight = 0.0f;
                                 }
-                                addCharsInfoToList(num, 0, 1, textWidth, textHeight);
+                                addCharsInfoToList(ii, 0, 1, textWidth, textHeight);
                             } else {
-                                addCharsInfoToList(num, 0, 1, textWidth, textHeight);
+                                addCharsInfoToList(ii, 0, 1, textWidth, textHeight);
 
                                 textWidth += measureWidth[0];
                             }
                         } else {
                             continue;
                         }
-                        if (newLineMap.get(num) instanceof Boolean) {
+                        if (newLineMap != null && newLineMap.get(ii) instanceof Boolean) {
                             textHeight += h;
                             textWidth = 0.0f;
                             if (textHeight >= mScreenHeight) {
@@ -139,12 +160,19 @@ public class CharsParase {
                     if (isStop()) {
                         break;
                     }
-                    num++;
                 }
-                textHeight += h;
-                addPageCharsList(tag, charsInfoList, textHeight, mScreenWidth);
-                charsInfoList = null;
-                textHeight = 0.0f;
+                if (!isStop()) {
+                    textHeight += h;
+                    addPageCharsList(tag, charsInfoList, textHeight, mScreenWidth);
+                    addPageCharsList(tag, null, UN_INVALUE, UN_INVALUE);
+                    charsInfoList = null;
+                    textHeight = 0.0f;
+                } else {
+                    if (charsInfoList != null) {
+                        charsInfoList.clear();
+                        charsInfoList = null;
+                    }
+                }
             }
             analysisInfo = null;
             iObtainer = null;
@@ -152,7 +180,7 @@ public class CharsParase {
     }
 
     private boolean isStop() {
-        if (iObtainer == null || iObtainer.isStop()) {
+        if (analysisInfo == null || iObtainer == null || iObtainer.isStop()) {
             return true;
         }
         return false;
@@ -183,13 +211,13 @@ public class CharsParase {
             paint.setTextSize(changeTextSize);
             result = true;
         } else {
-            if (textSizeMap.get(byteIndex) instanceof Integer) {
+            if (textSizeMap != null && textSizeMap.get(byteIndex) instanceof Integer) {
                 if ((int) paint.getTextSize() != (Integer) textSizeMap.get(byteIndex)) {
                     paint.setTextSize((Integer) textSizeMap.get(byteIndex));
                     result = true;
                 }
             } else {
-                if (textSizeMap.get(-1) instanceof Integer
+                if (textSizeMap != null && textSizeMap.get(-1) instanceof Integer
                         && (Integer) textSizeMap.get(-1) != (int) paint.getTextSize()) {
                     paint.setTextSize((Integer) textSizeMap.get(-1));
                     result = true;
@@ -210,7 +238,7 @@ public class CharsParase {
 
         if (chars != null && chars.length > index && index >= 0) {
             if (isSpecialSymbol(chars[index])) {
-                while ((index - 1) >= 0 && isSpecialSymbol(chars[index - 1])) {
+                while ((index - 1) >= 0 && chars != null && isSpecialSymbol(chars[index - 1])) {
                     index--;
                 }
             }
@@ -230,7 +258,7 @@ public class CharsParase {
 
         if (chars != null && chars.length > index && index >= 0) {
             if (isSpecialSymbol(chars[index])) {
-                while (chars.length > (index + 1) && isSpecialSymbol(chars[index + 1])) {
+                while (chars != null && chars.length > (index + 1) && isSpecialSymbol(chars[index + 1])) {
                     index++;
                 }
             }

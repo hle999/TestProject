@@ -16,7 +16,7 @@ import java.util.HashMap;
  * Editor: sgc
  * Date: 2015/01/04
  */
-public class TestNormalAnalyze extends TestBaseAnalyze{
+public class CharsNormalAnalyze extends CharsBaseAnalyze {
 
     /**
      * 是设置颜色标志
@@ -38,7 +38,9 @@ public class TestNormalAnalyze extends TestBaseAnalyze{
      */
     private byte YinBiaoStartAddress = 0x14;
 
-    public TestNormalAnalyze(byte[] byteBuffer){
+    private boolean lastIsAfterNewLine = false;
+
+    public CharsNormalAnalyze(byte[] byteBuffer){
         super(byteBuffer);
     }
 
@@ -85,14 +87,6 @@ public class TestNormalAnalyze extends TestBaseAnalyze{
                         startIndex = i + 3;
                     }
                     i += 2;
-                } else {
-                    /*byteBuffer[i] = BLANK_AREA;
-                    if (length > (i+1)) {
-                        byteBuffer[i+1] = BLANK_AREA;// 置为空域
-                    }
-                    if (length > (i+2)) {
-                        byteBuffer[i+2] = BLANK_AREA;
-                    }*/
                 }
             } else if (value == 0xFE) {// 判断音标,注意可能是汉字
                 value = byteBuffer[++i]&0xff;
@@ -123,12 +117,15 @@ public class TestNormalAnalyze extends TestBaseAnalyze{
     }
 
     private void addText(AnalysisInfo analysisInfo, byte[] bytes, int start, int offset,
-                         int color, int defaultColor, boolean isNewLine) {
+                         int color, int defaultColor, boolean isAfterNewLine) {
         if (bytes != null) {
             char[] chars = null;
             try {
 
                 String str = new String(bytes, start, offset, DictIOFile.DECODE_GB2312);
+                if (lastIsAfterNewLine && isAfterNewLine && str.trim().length() == 0) {
+                    return;
+                }
                 chars = str.toCharArray();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -149,10 +146,11 @@ public class TestNormalAnalyze extends TestBaseAnalyze{
                 if (color != defaultColor) {
                     analysisInfo.colorMap.put(analysisInfo.charList.size(), color);
                 }
-                if (isNewLine) {
+                if (isAfterNewLine) {
                     analysisInfo.newLineMap.put(analysisInfo.charList.size(), true);
                 }
                 analysisInfo.charList.add(chars);
+                lastIsAfterNewLine = isAfterNewLine;
             }
         }
     }

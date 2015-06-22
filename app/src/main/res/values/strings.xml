@@ -8,6 +8,7 @@
     <string name="tip_copy_fail_unkown">拷贝失败，请确认USB存储设备连接是否关闭!</string>
     <string name="tip_file_path">文件路径:</string>
     <string name="button_previous">上一个</string>
+    <string name="button_select_text">取词</string>
     <string name="button_next">下一个</string>
     <string name="button_connect">连接</string>
     <string name="button_wifi_connect">连接WIFI</string>

@@ -6,12 +6,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ListView;
 
-import com.sen.lib.view.VerticalScrollWidget;
 import com.sen.test.R;
 import com.sen.test.dictionary.analyze.NormalAnalyze;
-import com.sen.test.dictionary.analyze.TestNormalAnalyze;
 import com.sen.test.dictionary.io.DictFile;
 import com.sen.test.dictionary.search.DictWordSearch;
 import com.sen.test.dictionary.view.ScrollTextView;
@@ -39,6 +37,7 @@ public class BFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_b, null);
         view.findViewById(R.id.previous).setOnClickListener(this);
+        view.findViewById(R.id.select_text).setOnClickListener(this);
         view.findViewById(R.id.next).setOnClickListener(this);
         if (view.findViewById(R.id.text_show) instanceof ScrollTextView) {
 
@@ -60,8 +59,8 @@ public class BFragment extends Fragment implements View.OnClickListener{
             NormalAnalyze normalAnalyze = new NormalAnalyze(exp, 0, keyWord, false);
             scrollTextView.showText(normalAnalyze, 30, -1, -1);
         } else {
-
-            textScrollView.setTextSize(30);
+            textScrollView.setTargetPositionAfterLoaded(0, 15000);
+            textScrollView.setTextSize(23);
             textScrollView.setText(exp);
         }
         return view;
@@ -79,12 +78,29 @@ public class BFragment extends Fragment implements View.OnClickListener{
         switch (v.getId()) {
 
             case R.id.previous:
-
-                 break;
+                if (textScrollView != null) {
+//                    textScrollView.setSelectText(!textScrollView.isSelectText());
+                    textScrollView.getAdpater().notifyDataChange();
+                    textScrollView.smoothScrollBy(0, -5000);
+//                    new ListView().scrollTo();
+                }
+                break;
 
             case R.id.next:
+                if (textScrollView != null) {
+//                    textScrollView.setSelectText(!textScrollView.isSelectText());
+                    textScrollView.getAdpater().notifyDataChange();
+                    textScrollView.smoothScrollBy(0, 5000);
+//                    new ListView().scrollTo();
+                }
+                break;
 
-                 break;
+            case R.id.select_text:
+                /*if (textScrollView.getTextSize() >= 25) {
+                    textScrollView.setTextSize(21);
+                } else {
+                    textScrollView.setTextSize(textScrollView.getTextSize() + 2);
+                }*/
 
         }
 

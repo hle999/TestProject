@@ -47,7 +47,7 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
 
     @Override
     public void onClick() {
-        testPageAdapter.setCount(testPageAdapter.getCount() + 3);
+        testPageAdapter.setCount(testPageAdapter.getCount() - 3);
         testPageAdapter.notifyDataSetChanged();
 
         if (horizontalScrollView != null) {
@@ -73,7 +73,7 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
 
     class TestPageAdapter extends FragmentStatePagerAdapter {
 
-        private int count = 10;
+        private int count = 15;
 
         public void setCount(int count) {
             this.count = count;

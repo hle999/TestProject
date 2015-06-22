@@ -19,6 +19,10 @@ public class ParaseWorker extends Thread implements ICharsParaseObtainer<TextScr
         this.charsParase = charsParase;
     }
 
+    public CharsParase getParase() {
+        return charsParase;
+    }
+
     @Override
     public void setListener(TextScrollView.TextHandler textHandler) {
         this.textHandler = textHandler;

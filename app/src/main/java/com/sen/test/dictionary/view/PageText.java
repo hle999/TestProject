@@ -42,11 +42,6 @@ public class PageText extends View{
         super(context, attrs, defStyleAttr);
     }
 
-   /* @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }*/
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         ViewGroup.LayoutParams lp = getLayoutParams();
@@ -64,5 +59,11 @@ public class PageText extends View{
         if (imlDrawText != null) {
             imlDrawText.draw(canvas, index);
         }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        imlDrawText = null;
+        super.onDetachedFromWindow();
     }
 }

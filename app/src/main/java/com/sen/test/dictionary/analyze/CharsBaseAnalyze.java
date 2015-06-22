@@ -7,9 +7,7 @@ import com.sen.test.dictionary.view.ICharsAnalysisObtainer;
  * Editor: sgc
  * Date: 2015/01/20
  */
-public abstract class TestBaseAnalyze implements ImlAnalyze<ICharsAnalysisObtainer> {
-
-
+public abstract class CharsBaseAnalyze implements ImlAnalyze<ICharsAnalysisObtainer> {
 
     /**
      * 数据
@@ -26,7 +24,7 @@ public abstract class TestBaseAnalyze implements ImlAnalyze<ICharsAnalysisObtain
      */
     private ICharsAnalysisObtainer iCharsAnalysisObtainer = null;
 
-    public TestBaseAnalyze(byte[] byteBuffer){
+    public CharsBaseAnalyze(byte[] byteBuffer){
         this.byteBuffer = byteBuffer;
     }
 

@@ -9,6 +9,6 @@ public class CharsInfo {
     public int start = -1;
     public int offset = -1;
     public float x = 0.0f;
-    public float y = 0.0f;
+//    public float y = 0.0f;
 
 }

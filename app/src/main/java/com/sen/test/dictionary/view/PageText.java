@@ -46,8 +46,8 @@ public class PageText extends View{
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         ViewGroup.LayoutParams lp = getLayoutParams();
         if (lp != null) {
-            super.onMeasure(MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.AT_MOST),
-                    MeasureSpec.makeMeasureSpec(lp.height, MeasureSpec.AT_MOST));
+            super.onMeasure(MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(lp.height, MeasureSpec.EXACTLY));
         } else {
 
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);

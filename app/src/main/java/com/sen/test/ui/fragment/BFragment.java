@@ -101,6 +101,9 @@ public class BFragment extends Fragment implements View.OnClickListener{
                 } else {
                     textScrollView.setTextSize(textScrollView.getTextSize() + 2);
                 }*/
+                if (textScrollView != null) {
+                    textScrollView.setSelectText(!textScrollView.isSelectText());
+                }
 
         }
 

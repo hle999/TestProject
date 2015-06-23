@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Message;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.sen.test.dictionary.file.AnalyzeCodeDictionary;
 import com.sen.test.dictionary.file.ParaseWorker;
 import com.sen.test.dictionary.info.AnalysisInfo;
 import com.sen.test.dictionary.info.CharsInfo;
+import com.sen.test.dictionary.info.LinesInfo;
 import com.sen.test.dictionary.parse.CharsParase;
 import com.sen.test.dictionary.utils.BaseHandler;
 import com.sen.test.dictionary.view.ICharsAnalysisObtainer;
@@ -104,29 +106,6 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
         super(context, attrs, defStyle);
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        if (isSelectText) {
-            if (pageList != null) {
-                int pageIndex = -1;
-                for (PageInfo pageInfo : pageList) {
-                    if (pageInfo.isInner((int)ev.getX(), (int)ev.getY() + getScrollY())) {
-                        pageIndex = pageInfo.index;
-                        break;
-                    }
-                }
-            }
-            return true;
-        }
-        return super.onTouchEvent(ev);
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        init();
-    }
-
     public void setText(byte[] buffer) {
         CharsNormalAnalyze normalAnalyze = new CharsNormalAnalyze(buffer);
         normalAnalyze.setObtainer(mHandler);
@@ -155,6 +134,32 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
             }
         }
 
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (isSelectText) {
+
+            touch(event);
+            return true;
+        }
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        return super.onSaveInstanceState();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(state);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        init();
     }
 
     private void init() {
@@ -202,6 +207,72 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
         analyzeCodeDictionary.start();
     }
 
+    private void touch(MotionEvent event) {
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (pageList != null) {
+                    PageInfo po = null;
+                    for (PageInfo pageInfo : pageList) {
+                        if (pageInfo.isInner((int)event.getX(), (int)event.getY() + getScrollY())) {
+                            po = pageInfo;
+                            break;
+                        }
+                    }
+                    if (po != null) {
+                        List<LinesInfo> linesInfoList = po.data;
+                        LinesInfo lo = null;
+                        for (LinesInfo linesInfo : po.data) {
+                            if ((linesInfo.y + po.y) > (event.getY() + getScrollY())) {
+                                if (lo == null) {
+                                    lo = po.data.get(0);
+                                }
+                                break;
+                            }
+                            lo = linesInfo;
+                        }
+                        if (lo != null) {
+                            CharsInfo ci = null;
+                            for (CharsInfo charsInfo : lo.data) {
+                                if (charsInfo.x > event.getX()- getPaddingLeft()) {
+                                    if (ci == null) {
+                                        ci = lo.data.get(0);
+                                    }
+                                    break;
+                                }
+                                ci = charsInfo;
+                            }
+                            if (ci != null) {
+                                float[] measureWidth = new float[1];
+                                if (analysisInfo.charList.get(ci.index) instanceof char[]) {
+                                    char[] chars = (char[])analysisInfo.charList.get(ci.index);
+                                    int offset = mPaint.breakText(chars,
+                                            ci.start, ci.offset, event.getX() - getPaddingLeft() - ci.x, measureWidth);
+                                    if (offset > 0) {
+                                        if (event.getX() - getPaddingLeft() - ci.x > measureWidth[0]) {
+                                            if (ci.offset >= offset + 1) {
+                                                offset++;
+                                            }
+                                        }
+
+                                        System.out.println("char: "+
+                                                ((char[])analysisInfo.charList.get(ci.index))[ci.start + offset - 1]);
+                                    } else {
+                                        System.out.println("char: "+
+                                                ((char[])analysisInfo.charList.get(ci.index))[ci.start]);
+                                    }
+                                } else if (analysisInfo.charList.get(ci.index) instanceof Character) {
+                                    System.out.println("char: "+
+                                            (Character)analysisInfo.charList.get(ci.index));
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
     private void stopAnalyze() {
         if (analyzeCodeDictionary != null) {
             analyzeCodeDictionary.setStop();
@@ -233,22 +304,25 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
             List<Object> objectLists = analysisInfo.charList;
             PageInfo pageInfo = pageList.get(integer);
             if (pageInfo != null && pageInfo.data != null) {
-                for (CharsInfo charsInfo : pageInfo.data) {
-                    if (analysisInfo.colorMap.get(charsInfo.index) == null) {
-                        if (mPaint.getColor() != analysisInfo.colorMap.get(-1)) {
-                            mPaint.setColor(analysisInfo.colorMap.get(-1));
+                for (LinesInfo linesInfo : pageInfo.data) {
+                    for (CharsInfo charsInfo : linesInfo.data) {
+                        if (analysisInfo.colorMap.get(charsInfo.index) == null) {
+                            if (mPaint.getColor() != analysisInfo.colorMap.get(-1)) {
+                                mPaint.setColor(analysisInfo.colorMap.get(-1));
+                            }
+                        } else if (mPaint.getColor() != analysisInfo.colorMap.get(charsInfo.index)) {
+                            mPaint.setColor(analysisInfo.colorMap.get(charsInfo.index));
                         }
-                    } else if (mPaint.getColor() != analysisInfo.colorMap.get(charsInfo.index)) {
-                        mPaint.setColor(analysisInfo.colorMap.get(charsInfo.index));
-                    }
-                    if (objectLists.get(charsInfo.index) instanceof char[]) {
-                        canvas.drawText((char[]) objectLists.get(charsInfo.index), charsInfo.start,
-                                charsInfo.offset, charsInfo.x, charsInfo.y - mPaint.getFontMetrics().top, mPaint);
-                    } else if (objectLists.get(charsInfo.index) instanceof Character) {
-                        canvas.drawText((Character) objectLists.get(charsInfo.index)+"", charsInfo.start,
-                                charsInfo.offset, charsInfo.x, charsInfo.y - mPaint.getFontMetrics().top, mPaint);
+                        if (objectLists.get(charsInfo.index) instanceof char[]) {
+                            canvas.drawText((char[]) objectLists.get(charsInfo.index), charsInfo.start,
+                                    charsInfo.offset, charsInfo.x, linesInfo.y - mPaint.getFontMetrics().top, mPaint);
+                        } else if (objectLists.get(charsInfo.index) instanceof Character) {
+                            canvas.drawText((Character) objectLists.get(charsInfo.index)+"", charsInfo.start,
+                                    charsInfo.offset, charsInfo.x, linesInfo.y - mPaint.getFontMetrics().top, mPaint);
+                        }
                     }
                 }
+
 
             }
         }
@@ -286,8 +360,7 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
                         if (mTextScrollView != null && msg.obj instanceof AnalysisInfo) {
                             mTextScrollView.analysisInfo = (AnalysisInfo)msg.obj;
                             CharsParase charsParase = new CharsParase(mTextScrollView.analysisInfo);
-                            charsParase.init(mTextScrollView.getItemGroup().getWidth()
-                                            + 0.0f - mTextScrollView.getPaddingLeft() - mTextScrollView.getPaddingRight(),
+                            charsParase.init(mTextScrollView.getItemGroup().getWidth(),
                                     mTextScrollView.getHeight() + 0.0f,
                                     mTextScrollView.textSize, mTextScrollView.changeLine, mTextScrollView.changeTextSize);
                             if (paraseWorker != null) {
@@ -304,7 +377,7 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
                         break;
 
                     case PARARSE_CHARS:
-                        List<CharsInfo> data = (List<CharsInfo>)msg.obj;
+                        List<LinesInfo> data = (List<LinesInfo>)msg.obj;
                         if (mTextScrollView != null && mTextScrollView.analysisInfo != null) {
                         }
                         if (msg.getData() != null) {
@@ -355,15 +428,15 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
     }
 
     private class PageInfo {
-        List<CharsInfo> data;
+        List<LinesInfo> data;
         int width;
         int height;
         int y;
         int index;
 
         boolean isInner(int relativeX, int relativeY) {
-            if (width >= relativeX && relativeX >= 0.0f
-                    && (y + height) >= relativeY && relativeY > y) {
+            if (/*width >= relativeX && relativeX >= 0.0f
+                    &&*/ (y + height) >= relativeY && relativeY > y) {
                 return true;
             }
             return false;

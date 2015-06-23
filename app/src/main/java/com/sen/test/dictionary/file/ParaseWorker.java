@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by Sgc on 2015/6/17.
  */
-public class ParaseWorker extends Thread implements ICharsParaseObtainer<TextScrollView.TextHandler, String, List<CharsInfo>, Float, Float> {
+public class ParaseWorker extends Thread implements ICharsParaseObtainer<Object> {
 
     private TextScrollView.TextHandler textHandler;
     private CharsParase charsParase;
@@ -24,15 +24,20 @@ public class ParaseWorker extends Thread implements ICharsParaseObtainer<TextScr
     }
 
     @Override
-    public void setListener(TextScrollView.TextHandler textHandler) {
-        this.textHandler = textHandler;
+    public void setListener(Object obj) {
+        if (obj instanceof TextScrollView.TextHandler) {
+            this.textHandler = (TextScrollView.TextHandler)obj;
+        }
     }
 
     @Override
-    public void getParaseResult(String tag, List<CharsInfo> charsInfos, Float height, Float width) {
-        if (textHandler != null) {
-            textHandler.sendMessages(TextScrollView.TextHandler.PARARSE_CHARS,
-                    tag, charsInfos, (int)height.floatValue(), (int)width.floatValue(), 0);
+    public void getParaseResult(Object... objects) {
+        if (textHandler != null && objects != null) {
+            if (objects.length == 4 && objects[0] instanceof String
+                    && objects[2] instanceof Float && objects[3] instanceof Float) {
+                textHandler.sendMessages(TextScrollView.TextHandler.PARARSE_CHARS,
+                        (String)objects[0], objects[1], ((Float)objects[2]).intValue(), ((Float)objects[3]).intValue(), 0);
+            }
         }
     }
 

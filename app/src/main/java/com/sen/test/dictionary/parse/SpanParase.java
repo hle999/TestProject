@@ -3,7 +3,7 @@ package com.sen.test.dictionary.parse;
 import android.graphics.Paint;
 
 import com.sen.test.dictionary.info.AnalysisInfo;
-import com.sen.test.dictionary.info.CharsInfo;
+import com.sen.test.dictionary.info.SpanInfo;
 import com.sen.test.dictionary.info.LinesInfo;
 
 import java.util.ArrayList;
@@ -13,62 +13,49 @@ import java.util.Map;
 /**
  * Created by Sgc on 2015/6/16.
  */
-public class CharsParase {
+public class SpanParase {
 
     public final static int UN_INVALUE = -1;
 
     private float mScreenWidth;
     private float mScreenHeight;
-    private int mTextSize;
-    private int changeLine = UN_INVALUE;
-    private int changeTextSize = 0;
 
     private AnalysisInfo analysisInfo;
-    private ICharsParaseObtainer iObtainer;
-    private List<CharsInfo> charsInfoList;
+    private ISpanParaseObtainer iObtainer;
+    private List<SpanInfo> lineSpanInfoList;
     private List<LinesInfo> linesInfoList;
 
-    public void setCharsParaseObtainer(ICharsParaseObtainer iObtainer) {
+    public void setCharsParaseObtainer(ISpanParaseObtainer iObtainer) {
         this.iObtainer = iObtainer;
     }
 
-    public CharsParase(AnalysisInfo analysisInfo) {
+    public SpanParase(AnalysisInfo analysisInfo) {
         this.analysisInfo = analysisInfo;
     }
 
-    public void init(float mScreenWidth, float mScreenHeight,
-                     int mTextSize, int changeLine, int changeTextSize) {
+    public void init(float mScreenWidth, float mScreenHeight) {
         this.mScreenWidth = mScreenWidth;
         this.mScreenHeight = mScreenHeight;
-        this.mTextSize = mTextSize;
-        this.changeLine = changeLine;
-        this.changeTextSize = changeTextSize;
     }
 
     public void start() {
-        parase();
+        parase(0, UN_INVALUE, UN_INVALUE, 0);
     }
 
-    public void parase() {
-        if (analysisInfo != null) {
+    public void parase(int intCharListIndex, int intCharStart, int intCharOffset, int intLine) {
+        if (analysisInfo != null && mScreenWidth > 0 && mScreenHeight > 0) {
             Paint mPaint = new Paint();
-            float h = mPaint.getFontMetrics().bottom - mPaint.getFontMetrics().top;
-            mPaint.setTextSize(mTextSize);
             mPaint.setSubpixelText(true);
             if (analysisInfo.charList != null && iObtainer != null) {
                 String tag = iObtainer.toString();
-                Map textSizeMap = analysisInfo.colorMap;
                 Map newLineMap = analysisInfo.newLineMap;
                 List<Object> objects = analysisInfo.charList;
                 int number = objects.size();
-                int line = 0;
                 float textWidth = 0.0f;
                 float textHeight = 0.0f;
                 float[] measureWidth = new float[1];
-                for (int ii = 0 ; ii < number ; ii++) {
-                    if (resetPaint(mPaint, textSizeMap, ii, line) ) {
-                        h = mPaint.getFontMetrics().bottom - mPaint.getFontMetrics().top;
-                    }
+                float h = analysisInfo.measureWordHeight(0, mPaint, intLine);
+                for (int ii = intCharListIndex ; ii < number ; ii++) {
                     Object obj = null;
                     if (objects != null) {
                         obj = objects.get(ii);
@@ -76,9 +63,13 @@ public class CharsParase {
                     if (obj != null) {
                         if (obj instanceof char[]) {
                             char[] chars = (char[]) obj;
+                            int start = 0;
                             int length = chars.length;
                             int leave = length;
-                            int start = 0;
+                            if (intCharStart > UN_INVALUE && intCharOffset > UN_INVALUE) {
+                                start = intCharStart;
+                                leave = intCharOffset;
+                            }
                             while (leave != 0) {
                                 int offset = UN_INVALUE;
                                 if (chars != null) {
@@ -92,10 +83,11 @@ public class CharsParase {
                                     int sufIndex = sufMatchSymbol(chars, end);
                                     if (sufIndex > end) {
                                         int preIndex = preMatchSymbol(chars, end);
-                                        addCharsInfoToList(ii, start,
+                                        addCharsInfoToLine(ii, start,
                                                 preIndex - start, textWidth, textHeight);
 
-                                        addLine(textHeight, mPaint.getTextSize());
+                                        addLineToList(intLine, textHeight, mPaint.getTextSize());
+                                        intLine++;
 
                                         start = preIndex;
                                         leave = length - start;
@@ -105,8 +97,11 @@ public class CharsParase {
                                             addPage(tag, textHeight);
                                             textHeight = 0.0f;
                                         }
+                                        if (analysisInfo != null) {
+                                            h = analysisInfo.measureWordHeight(h, mPaint, intLine);
+                                        }
                                     } else {
-                                        addCharsInfoToList(ii, start,
+                                        addCharsInfoToLine(ii, start,
                                                 end + 1 - start, textWidth, textHeight);
                                         textWidth += measureWidth[0];
                                         start = end + 1;
@@ -114,13 +109,17 @@ public class CharsParase {
                                     }
                                 } else if (offset != UN_INVALUE){
 
-                                    addLine(textHeight, mPaint.getTextSize());
+                                    addLineToList(intLine, textHeight, mPaint.getTextSize());
+                                    intLine++;
 
                                     textHeight += h;
                                     textWidth = 0.0f;
                                     if (textHeight >= mScreenHeight) {
                                         addPage(tag, textHeight);
                                         textHeight = 0.0f;
+                                    }
+                                    if (analysisInfo != null) {
+                                        h = analysisInfo.measureWordHeight(h, mPaint, intLine);
                                     }
                                 }
                             }
@@ -135,7 +134,8 @@ public class CharsParase {
                             }
                             if (textWidth + measureWidth[0] > mScreenWidth) {
 
-                                addLine(textHeight, mPaint.getTextSize());
+                                addLineToList(intLine, textHeight, mPaint.getTextSize());
+                                intLine++;
 
                                 textHeight += h;
                                 textWidth = 0;
@@ -144,10 +144,15 @@ public class CharsParase {
                                     addPage(tag, textHeight);
                                     textHeight = 0.0f;
                                 }
-                                addCharsInfoToList(ii, 0, 1, textWidth, textHeight);
+                                if (analysisInfo != null) {
+                                    h = analysisInfo.measureWordHeight(h, mPaint, intLine);
+
+                                }
+
+                                addCharsInfoToLine(ii, 0, 1, textWidth, textHeight);
                                 textWidth = measureWidth[0];
                             } else {
-                                addCharsInfoToList(ii, 0, 1, textWidth, textHeight);
+                                addCharsInfoToLine(ii, 0, 1, textWidth, textHeight);
 
                                 textWidth += measureWidth[0];
                             }
@@ -156,13 +161,17 @@ public class CharsParase {
                         }
                         if (newLineMap != null && newLineMap.get(ii) instanceof Boolean) {
 
-                            addLine(textHeight, mPaint.getTextSize());
+                            addLineToList(intLine, textHeight, mPaint.getTextSize());
+                            intLine++;
 
                             textHeight += h;
                             textWidth = 0.0f;
                             if (textHeight >= mScreenHeight) {
                                 addPage(tag, textHeight);
                                 textHeight = 0.0f;
+                            }
+                            if (analysisInfo != null) {
+                                h = analysisInfo.measureWordHeight(h, mPaint, intLine);
                             }
                         }
                     } else {
@@ -174,7 +183,8 @@ public class CharsParase {
                 }
                 if (!isStop()) {
 
-                    addLine(textHeight, mPaint.getTextSize());
+                    addLineToList(intLine, textHeight, mPaint.getTextSize());
+                    intLine++;
 
                     textHeight += h;
                     addPage(tag, textHeight);
@@ -183,9 +193,9 @@ public class CharsParase {
                     linesInfoList = null;
                     textHeight = 0.0f;
                 } else {
-                    if (charsInfoList != null) {
-                        charsInfoList.clear();
-                        charsInfoList = null;
+                    if (lineSpanInfoList != null) {
+                        lineSpanInfoList.clear();
+                        lineSpanInfoList = null;
                     }
                 }
             }
@@ -207,16 +217,17 @@ public class CharsParase {
         }
     }*/
 
-    private void addLine(float textHeight, float textSize) {
-        if (charsInfoList != null) {
+    private void addLineToList(int lineIndex, float textHeight, float textSize) {
+        if (lineSpanInfoList != null) {
             LinesInfo linesInfo = new LinesInfo();
-            linesInfo.data = charsInfoList;
+            linesInfo.index = lineIndex;
             linesInfo.y = textHeight;
+            linesInfo.data = lineSpanInfoList;
             if (linesInfoList == null) {
                 linesInfoList = new ArrayList<>();
             }
             linesInfoList.add(linesInfo);
-            charsInfoList = null;
+            lineSpanInfoList = null;
         }
     }
 
@@ -231,17 +242,17 @@ public class CharsParase {
         }
     }
 
-    private void addCharsInfoToList(int index, int start, int offset, float x, float y) {
-        CharsInfo charsInfo = new CharsInfo();
-        charsInfo.index = index;
-        charsInfo.start = start;
-        charsInfo.offset = offset;
-        charsInfo.x = x;
+    private void addCharsInfoToLine(int index, int start, int offset, float x, float y) {
+        SpanInfo spanInfo = new SpanInfo();
+        spanInfo.index = index;
+        spanInfo.start = start;
+        spanInfo.offset = offset;
+        spanInfo.x = x;
 //        charsInfo.y = y;
-        if (charsInfoList == null) {
-            charsInfoList = new ArrayList<>();
+        if (lineSpanInfoList == null) {
+            lineSpanInfoList = new ArrayList<>();
         }
-        charsInfoList.add(charsInfo);
+        lineSpanInfoList.add(spanInfo);
     }
 
     /*private CharsInfo getCharsInfo(int index, int start, int offset, float x, float y) {
@@ -254,27 +265,30 @@ public class CharsParase {
         return charsInfo;
     }*/
 
-    private boolean resetPaint(Paint paint, Map textSizeMap, int byteIndex, int lineIndex) {
+    /*private float getWordHeight(float wordHeight, Paint mPaint,
+                                Map textSizeMap, int lineIndex) {
+        if (resetPaint(mPaint, textSizeMap, lineIndex) ) {
+            wordHeight = mPaint.getFontMetrics().bottom - mPaint.getFontMetrics().top;
+        }
+        return wordHeight;
+    }
+
+    private boolean resetPaint(Paint paint, Map textSizeMap, int lineIndex) {
         boolean result = false;
-        if (changeLine == lineIndex && changeTextSize != 0) {
-            paint.setTextSize(changeTextSize);
-            result = true;
+        if (textSizeMap != null && textSizeMap.get(lineIndex) instanceof Integer) {
+            if ((int) paint.getTextSize() != (Integer) textSizeMap.get(lineIndex)) {
+                paint.setTextSize((Integer) textSizeMap.get(lineIndex));
+                result = true;
+            }
         } else {
-            if (textSizeMap != null && textSizeMap.get(byteIndex) instanceof Integer) {
-                if ((int) paint.getTextSize() != (Integer) textSizeMap.get(byteIndex)) {
-                    paint.setTextSize((Integer) textSizeMap.get(byteIndex));
-                    result = true;
-                }
-            } else {
-                if (textSizeMap != null && textSizeMap.get(-1) instanceof Integer
-                        && (Integer) textSizeMap.get(-1) != (int) paint.getTextSize()) {
-                    paint.setTextSize((Integer) textSizeMap.get(-1));
-                    result = true;
-                }
+            if (textSizeMap != null && textSizeMap.get(-1) instanceof Integer
+                    && (Integer) textSizeMap.get(-1) != (int) paint.getTextSize()) {
+                paint.setTextSize((Integer) textSizeMap.get(-1));
+                result = true;
             }
         }
         return result;
-    }
+    }*/
 
     /**
      * ÏòÇ°ËÑË÷

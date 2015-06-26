@@ -1,26 +1,23 @@
 package com.sen.test.dictionary.file;
 
-import com.sen.test.dictionary.info.CharsInfo;
-import com.sen.test.dictionary.parse.CharsParase;
-import com.sen.test.dictionary.parse.ICharsParaseObtainer;
+import com.sen.test.dictionary.parse.SpanParase;
+import com.sen.test.dictionary.parse.ISpanParaseObtainer;
 import com.sen.test.dictionary.widget.TextScrollView;
-
-import java.util.List;
 
 /**
  * Created by Sgc on 2015/6/17.
  */
-public class ParaseWorker extends Thread implements ICharsParaseObtainer<Object> {
+public class ParaseWorker extends Thread implements ISpanParaseObtainer<Object> {
 
     private TextScrollView.TextHandler textHandler;
-    private CharsParase charsParase;
+    private SpanParase spanParase;
 
-    public ParaseWorker(CharsParase charsParase) {
-        this.charsParase = charsParase;
+    public ParaseWorker(SpanParase spanParase) {
+        this.spanParase = spanParase;
     }
 
-    public CharsParase getParase() {
-        return charsParase;
+    public SpanParase getParase() {
+        return spanParase;
     }
 
     @Override
@@ -48,10 +45,10 @@ public class ParaseWorker extends Thread implements ICharsParaseObtainer<Object>
 
     @Override
     public void run() {
-        if (charsParase != null) {
-            charsParase.setCharsParaseObtainer(this);
-            charsParase.start();
-            charsParase.setCharsParaseObtainer(null);
+        if (spanParase != null) {
+            spanParase.setCharsParaseObtainer(this);
+            spanParase.start();
+            spanParase.setCharsParaseObtainer(null);
         }
         textHandler = null;
     }

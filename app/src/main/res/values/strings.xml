@@ -73,4 +73,7 @@
     <string name="video_play">播放</string>
     <string name="video_pause">暂停</string>
     <string name="video_stop">停止</string>
+
+    <string name="button_start">开始</string>
+    <string name="button_stop">中断</string>
 </resources>

@@ -47,7 +47,7 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
 
     @Override
     public void onClick() {
-        testPageAdapter.setCount(testPageAdapter.getCount() - 3);
+        testPageAdapter.setCount(testPageAdapter.getCount() + 3);
         testPageAdapter.notifyDataSetChanged();
 
         if (horizontalScrollView != null) {
@@ -113,7 +113,7 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
         @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
-//            System.out.println("drawing... "+getText());
+            System.out.println("drawing... "+getText());
         }
     }
 

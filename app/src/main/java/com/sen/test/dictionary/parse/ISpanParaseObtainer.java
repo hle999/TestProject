@@ -3,7 +3,7 @@ package com.sen.test.dictionary.parse;
 /**
  * Created by Sen on 2015/6/17.
  */
-public interface ICharsParaseObtainer<K> {
+public interface ISpanParaseObtainer<K> {
 
     public void setListener(K k);
     public void getParaseResult(K... k);

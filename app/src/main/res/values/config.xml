@@ -17,6 +17,7 @@
         <item>project_scroll_item</item>
         <item>project_video_play</item>
         <item>project_inject</item>
+        <item>project_thread</item>
     </string-array>
 
     <string name="project_copy_parentmanager_databases">拷贝家长管理数据库</string>
@@ -37,5 +38,6 @@
     <string name="project_scroll_item">ScrollView Item</string>
     <string name="project_video_play">Video Play</string>
     <string name="project_inject">Inject</string>
+    <string name="project_thread">threads</string>
 
 </resources>

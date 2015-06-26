@@ -3,7 +3,7 @@ package com.sen.test.dictionary.info;
 /**
  * Created by Sgc on 2015/6/15.
  */
-public class CharsInfo {
+public class SpanInfo {
 
     public int index = -1;
     public int start = -1;

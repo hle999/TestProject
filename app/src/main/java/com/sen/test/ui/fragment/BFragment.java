@@ -59,8 +59,8 @@ public class BFragment extends Fragment implements View.OnClickListener{
             NormalAnalyze normalAnalyze = new NormalAnalyze(exp, 0, keyWord, false);
             scrollTextView.showText(normalAnalyze, 30, -1, -1);
         } else {
-            textScrollView.setTargetPositionAfterLoaded(0, 15000);
-            textScrollView.setTextSize(23);
+//            textScrollView.setTargetPositionAfterLoaded(0, 15000);
+            textScrollView.setTextSize(50);
             textScrollView.setText(exp);
         }
         return view;

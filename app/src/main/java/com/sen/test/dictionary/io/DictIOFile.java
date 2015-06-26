@@ -1,10 +1,12 @@
 package com.sen.test.dictionary.io;
 
+import android.os.Environment;
 import android.util.Log;
 
 
 import com.sen.test.dictionary.utils.ChineseCharFilter;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -150,22 +152,26 @@ public class DictIOFile {
      */
     private RandomAccessFile mRandomAccessFile = null;
 
+    private final String EXTERNAL_PATH = "/system/readboy/dictionary";
+    private final String SDCARD_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/rdict";
+    private String parentPath = EXTERNAL_PATH;
+
     /**
      * 字典存放位置
      */
-    public static final String[] DICT_LOCAL_NAME = {
-            "/system/readboy/dictionary/bihua.dct",
-            "/system/readboy/dictionary/chengyu.dct",
-            "/system/readboy/dictionary/dangdai.dct",
-            "/system/readboy/dictionary/dongman.dct",
-            "/system/readboy/dictionary/gdhy.dct",
-            "/system/readboy/dictionary/hanying.dct",
-            "/system/readboy/dictionary/hanyu.dct",
-            "/system/readboy/dictionary/jmyinghan.dct",
-            "/system/readboy/dictionary/xuesheng.dct",
-            "/system/readboy/dictionary/yinghan.dct",
-            "/system/readboy/dictionary/yingying.dct",
-            "/system/readboy/dictionary/wordsph.dat" };
+    public String[] DICT_LOCAL_NAME = {
+            parentPath + "/bihua.dct",
+            parentPath + "/chengyu.dct",
+            parentPath + "/dangdai.dct",
+            parentPath + "/dongman.dct",
+            parentPath + "/gdhy.dct",
+            parentPath + "/hanying.dct",
+            parentPath + "/hanyu.dct",
+            parentPath + "/jmyinghan.dct",
+            parentPath + "/xuesheng.dct",
+            parentPath + "/yinghan.dct",
+            parentPath + "/yingying.dct",
+            parentPath + "/wordsph.dat" };
 
     public static final String BIHUA_LOCAL_NAME = "/system/readboy/dictionary/BiHuaDic.pin";
 
@@ -196,6 +202,31 @@ public class DictIOFile {
 
     public int getAllKeycount() {
         return mKeyCount;
+    }
+
+    public DictIOFile() {
+        if (!new File(EXTERNAL_PATH).exists()) {
+            parentPath = SDCARD_PATH;
+            DICT_LOCAL_NAME = getDictPaths();
+        }
+    }
+
+    public String[] getDictPaths() {
+
+        String[] arrays =  {parentPath + "/bihua.dct",
+                    parentPath + "/chengyu.dct",
+                    parentPath + "/dangdai.dct",
+                    parentPath + "/dongman.dct",
+                    parentPath + "/gdhy.dct",
+                    parentPath + "/hanying.dct",
+                    parentPath + "/hanyu.dct",
+                    parentPath + "/jmyinghan.dct",
+                    parentPath + "/xuesheng.dct",
+                    parentPath + "/yinghan.dct",
+                    parentPath + "/yingying.dct",
+                    parentPath + "/wordsph.dat" };
+
+        return arrays;
     }
 
     /**

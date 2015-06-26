@@ -16,7 +16,7 @@ import java.util.HashMap;
  * Editor: sgc
  * Date: 2015/01/04
  */
-public class CharsNormalAnalyze extends CharsBaseAnalyze {
+public class SpanNormalAnalyze extends SpanBaseAnalyze {
 
     /**
      * 是设置颜色标志
@@ -40,7 +40,7 @@ public class CharsNormalAnalyze extends CharsBaseAnalyze {
 
     private boolean lastIsAfterNewLine = false;
 
-    public CharsNormalAnalyze(byte[] byteBuffer){
+    public SpanNormalAnalyze(byte[] byteBuffer){
         super(byteBuffer);
     }
 

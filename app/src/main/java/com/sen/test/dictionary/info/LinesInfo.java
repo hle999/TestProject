@@ -7,8 +7,8 @@ import java.util.List;
  */
 public class LinesInfo {
 
-    public List<CharsInfo> data;
+    public int index;
     public float y;
-    public int textSize;
+    public List<SpanInfo> data;
 
 }

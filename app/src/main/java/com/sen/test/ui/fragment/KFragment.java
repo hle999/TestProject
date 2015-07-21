@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,8 @@ import com.sen.lib.view.HorizontalItemTab;
 import com.sen.lib.view.ItemTabAdapter;
 import com.sen.lib.view.VerticalScrollWidget;
 import com.sen.test.R;
+
+import java.util.ArrayList;
 
 /**
  * Created by Administrator on 15-4-20.
@@ -45,10 +48,25 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
         return view;
     }
 
+    private int testItem = -1;
+
     @Override
     public void onClick() {
-        testPageAdapter.setCount(testPageAdapter.getCount() + 3);
+        testItem = 2;
+        /*if (testPageAdapter.getCount() == 25) {
+
+            testPageAdapter.setCount(testPageAdapter.getCount() - 7);
+        } else {
+            testPageAdapter.setCount(testPageAdapter.getCount() + 7);
+        }
         testPageAdapter.notifyDataSetChanged();
+        int lastCurrenItem = viewPager.getCurrentItem();
+//        viewPager.setAdapter(testPageAdapter);
+        if (lastCurrenItem >= testPageAdapter.getCount()) {
+            viewPager.setCurrentItem(testPageAdapter.getCount() - 1, false);
+        } else {
+            viewPager.setCurrentItem(lastCurrenItem, false);
+        }*/
 
         if (horizontalScrollView != null) {
             horizontalScrollView.getAdpater().notifyDataChange();
@@ -73,7 +91,7 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
 
     class TestPageAdapter extends FragmentStatePagerAdapter {
 
-        private int count = 15;
+        private int count = 5;
 
         public void setCount(int count) {
             this.count = count;
@@ -113,7 +131,7 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
         @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
-            System.out.println("drawing... "+getText());
+            System.out.println("drawing... " + getText());
         }
     }
 
@@ -173,9 +191,17 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
             }
             if (postion != horizontalScrollView.getSelectItemIndex()) {
                 ((TextView) v).setTextColor(Color.BLACK);
+            } else {
+                ((TextView) v).setTextColor(Color.WHITE);
             }
-            ((TextView) v).setText(" TheNihgt " + postion);
-            ((TextView) v).setTextSize(50);
+            if (postion == testItem) {
+                ((TextView) v).setText(" Thiiihgt " + postion);
+                ((TextView) v).setTextSize(60);
+            } else {
+
+                ((TextView) v).setText(" TheNihgt " + postion);
+                ((TextView) v).setTextSize(50);
+            }
                 /*if (container.indexOfChild(v) != selectIndex) {
                     ((TextView) v).setTextColor(Color.BLACK);
                 } else {

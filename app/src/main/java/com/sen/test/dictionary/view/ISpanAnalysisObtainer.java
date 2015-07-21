@@ -5,7 +5,7 @@ import com.sen.test.dictionary.info.AnalysisInfo;
 /**
  * Created by Sgc on 2015/6/15.
  */
-public interface ICharsAnalysisObtainer {
+public interface ISpanAnalysisObtainer {
 
     public void getResult(AnalysisInfo analysisInfo);
 

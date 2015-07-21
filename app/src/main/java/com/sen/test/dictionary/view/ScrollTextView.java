@@ -137,7 +137,7 @@ public class ScrollTextView extends LinearLayout {
         this.textPaddingRight = textPaddingRight;
     }
 
-    public void setText(final ImlAnalyze<ICharsAnalysisObtainer> imlAnalyze, final int textSize, int changeTextSizeLine, int changeLineTextSize) {
+    public void setText(final ImlAnalyze<ISpanAnalysisObtainer> imlAnalyze, final int textSize, int changeTextSizeLine, int changeLineTextSize) {
         this.changeTextSizeLine = changeTextSizeLine;
         this.changeLineTextSize = changeLineTextSize;
         /**
@@ -173,7 +173,7 @@ public class ScrollTextView extends LinearLayout {
         }
     }
 
-    private void setText(ImlAnalyze<ICharsAnalysisObtainer> imlAnalyze, int textSize) {
+    private void setText(ImlAnalyze<ISpanAnalysisObtainer> imlAnalyze, int textSize) {
         stopAllViewAnalyzeThread();
         View dictTextView = new CustomTextView(getContext());
         ((ITextContrler)dictTextView).setOnDictTextViewListener(new CustomTextView.DictTextViewListener() {

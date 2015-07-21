@@ -16,12 +16,9 @@ public class AnalysisInfo {
     public Map<Integer, Boolean> newLineMap;
 
 
-    public float measureWordHeight(float wordHeight, Paint paint, int lineIndex) {
-        if (resetPaint(paint, lineIndex) ) {
-            wordHeight = paint.getFontMetrics().bottom - paint.getFontMetrics().top;
-        }
-        return wordHeight;
-    }
+
+
+
 
     public void destroy() {
         if (charList != null) {
@@ -36,22 +33,6 @@ public class AnalysisInfo {
         if (newLineMap != null) {
             newLineMap.clear();
         }
-    }
-
-    private boolean resetPaint(Paint paint, int lineIndex) {
-        boolean result = false;
-        if (textSizeMap != null && paint != null) {
-            if (textSizeMap.get(lineIndex) != null
-                    && (int) paint.getTextSize() != textSizeMap.get(lineIndex)) {
-                paint.setTextSize(textSizeMap.get(lineIndex));
-                result = true;
-            } else if (textSizeMap.get(-1) != null
-                    && (int) paint.getTextSize() != textSizeMap.get(-1)) {
-                paint.setTextSize(textSizeMap.get(-1));
-                result = true;
-            }
-        }
-        return result;
     }
 
 }

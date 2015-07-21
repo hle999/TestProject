@@ -24,6 +24,15 @@ android {
 //            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
+    }
+
+    productFlavors {
+
+        dd {
+
+        }
+
     }
 }
 
@@ -44,6 +53,7 @@ dependencies {
     //    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile files('libs/aidl_dictionary.jar')
     compile files('libs/volley-5.0.2.jar')
+    compile files('libs/jpush-sdk-release1.7.5.jar')
 }
 
 
@@ -54,3 +64,30 @@ apt {
         resourcePackageName android.defaultConfig.applicationId
     }
 }
+
+task copyNativeApk(type: Copy) {
+    from fileTree(dir:'build/outputs/apk', include: '*debug*.apk') into 'build/outputs/apk/debug' exclude '*unaligned*.apk'
+
+    doLast {
+        def productNameArray = new ArrayList()
+        android.productFlavors.sort().each {
+            productNameArray.add(it.name)
+        }
+        outputs.files.each { it.listFiles().each {
+            def curDate = new Date()
+            def apkName = curDate.format('yyyy-MM-dd-HH-mm').toString()
+            def apkFile = it
+            productNameArray.each {
+                if (apkFile.name.contains(it)) {
+                    apkFile.renameTo(apkFile.parentFile.absolutePath + File.separator + it + "_" + apkName +'.apk')
+                }
+            }
+
+        } }
+
+        delete(fileTree(dir:'build/outputs/apk', include:'*.apk'))
+    }
+}
+
+
+

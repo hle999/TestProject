@@ -2,19 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:clickable="true"
     android:background="@color/white">
 
-    <com.sen.lib.view.VerticalScrollWidget
+    <!--<com.sen.lib.view.VerticalScrollWidget
         android:id="@+id/scroll_items"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"/>-->
 
-    <!--<com.sen.lib.view.HorizontalItemTab
+    <com.sen.lib.view.HorizontalItemTab
         android:id="@+id/scroll_items"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>-->
+        android:layout_height="wrap_content"/>
 
     <com.sen.lib.support.CustomViewPager
         android:id="@+id/scroll_viewpager"

@@ -1,18 +1,16 @@
 package com.sen.test;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
 import com.google.inject.Inject;
-import com.sen.test.ui.fragment.BaseFragment;
 import com.sen.test.ui.fragment.MainFragment;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.TreeSet;
+
+import cn.jpush.android.api.JPushInterface;
 
 /**
  * Created by Administrator on 14-12-12.
@@ -34,6 +32,7 @@ public class MainActivity extends BaseActivity {
         bt.add(R.id.content, fragment);
         bt.commit();
 
+        JPushInterface.init(getApplicationContext());
         /*try {
             String yourShellInput = "busybox am force-stop com.sen.test";  // or whatever ...
             String[] commandAndArgs = new String[]{ "/bin/sh", "-c", yourShellInput };
@@ -47,4 +46,16 @@ public class MainActivity extends BaseActivity {
         }*/
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        JPushInterface.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        JPushInterface.onPause(this);
+    }
 }
+

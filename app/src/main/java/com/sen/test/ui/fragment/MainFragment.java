@@ -16,7 +16,9 @@ import android.widget.EditText;
 import com.sen.test.MaterialDesignActivity;
 import com.sen.test.R;
 import com.sen.test.adapter.ProjectItemsAdapter;
+import com.sen.test.ui.work.ApiCloudFragment;
 import com.sen.test.ui.work.DictionaryDataFragment;
+import com.sen.test.ui.work.MenuChooseFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,6 +138,10 @@ public class MainFragment extends Fragment implements ProjectItemsAdapter.OnItem
             case R.string.project_thread:
                 BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new NFragment(), null);
 
+                break;
+
+            case R.string.project_api_cloud:
+                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new MenuChooseFragment(), null);
                 break;
         }
 

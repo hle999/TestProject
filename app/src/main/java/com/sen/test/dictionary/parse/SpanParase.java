@@ -54,7 +54,7 @@ public class SpanParase {
                 float textWidth = 0.0f;
                 float textHeight = 0.0f;
                 float[] measureWidth = new float[1];
-                float h = analysisInfo.measureWordHeight(0, mPaint, intLine);
+                float h = measureWordHeight(0, mPaint, intLine);
                 for (int ii = intCharListIndex ; ii < number ; ii++) {
                     Object obj = null;
                     if (objects != null) {
@@ -98,7 +98,7 @@ public class SpanParase {
                                             textHeight = 0.0f;
                                         }
                                         if (analysisInfo != null) {
-                                            h = analysisInfo.measureWordHeight(h, mPaint, intLine);
+                                            h = measureWordHeight(h, mPaint, intLine);
                                         }
                                     } else {
                                         addCharsInfoToLine(ii, start,
@@ -119,7 +119,7 @@ public class SpanParase {
                                         textHeight = 0.0f;
                                     }
                                     if (analysisInfo != null) {
-                                        h = analysisInfo.measureWordHeight(h, mPaint, intLine);
+                                        h = measureWordHeight(h, mPaint, intLine);
                                     }
                                 }
                             }
@@ -145,7 +145,7 @@ public class SpanParase {
                                     textHeight = 0.0f;
                                 }
                                 if (analysisInfo != null) {
-                                    h = analysisInfo.measureWordHeight(h, mPaint, intLine);
+                                    h = measureWordHeight(h, mPaint, intLine);
 
                                 }
 
@@ -171,7 +171,7 @@ public class SpanParase {
                                 textHeight = 0.0f;
                             }
                             if (analysisInfo != null) {
-                                h = analysisInfo.measureWordHeight(h, mPaint, intLine);
+                                h = measureWordHeight(h, mPaint, intLine);
                             }
                         }
                     } else {
@@ -253,6 +253,32 @@ public class SpanParase {
             lineSpanInfoList = new ArrayList<>();
         }
         lineSpanInfoList.add(spanInfo);
+    }
+
+    private float measureWordHeight(float wordHeight, Paint paint, int lineIndex) {
+        if (resetPaint(paint, lineIndex) ) {
+            wordHeight = paint.getFontMetrics().bottom - paint.getFontMetrics().top;
+        }
+        return wordHeight;
+    }
+
+    private boolean resetPaint(Paint paint, int lineIndex) {
+        boolean result = false;
+        if (analysisInfo != null) {
+            Map<Integer, Integer> textSizeMap = analysisInfo.textSizeMap;
+            if (textSizeMap != null && paint != null) {
+                Integer textSize = textSizeMap.get(lineIndex);
+                Integer defaultTextSize = textSizeMap.get(-1);
+                if (textSize != null && (int) paint.getTextSize() != textSize) {
+                    paint.setTextSize(textSize);
+                    result = true;
+                } else if (defaultTextSize != null && (int) paint.getTextSize() != defaultTextSize) {
+                    paint.setTextSize(textSizeMap.get(-1));
+                    result = true;
+                }
+            }
+        }
+        return result;
     }
 
     /*private CharsInfo getCharsInfo(int index, int start, int offset, float x, float y) {

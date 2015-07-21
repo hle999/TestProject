@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.os.Message;
 import android.os.Parcelable;
 import android.os.SystemClock;
@@ -23,13 +24,14 @@ import com.sen.test.dictionary.info.SpanInfo;
 import com.sen.test.dictionary.info.LinesInfo;
 import com.sen.test.dictionary.parse.SpanParase;
 import com.sen.test.dictionary.utils.BaseHandler;
-import com.sen.test.dictionary.view.ICharsAnalysisObtainer;
+import com.sen.test.dictionary.view.ISpanAnalysisObtainer;
 import com.sen.test.dictionary.view.ImlDrawText;
 import com.sen.test.dictionary.view.PageText;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Sen on 2015/6/15.
@@ -76,6 +78,8 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
     private float cursorStartY;
     private float cursorEndX;
     private float cursorEndY;
+
+    private Path pathSelectRegion;
 
     private long lngCursorLastTime = SystemClock.elapsedRealtime();
 
@@ -130,7 +134,7 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
         this.changeTextSize = changeTextSize;
     }
 
-    private void setText(final ImlAnalyze<ICharsAnalysisObtainer> imlAnalyze) {
+    private void setText(final ImlAnalyze<ISpanAnalysisObtainer> imlAnalyze) {
         if (getTextSize() != 0) {
             /**
              * View有可能正在初始化，长宽都为0，放入消息队列，等初始完再执行
@@ -229,7 +233,6 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
                 lp.height = pageList.get(postion).height;
                 v.setLayoutParams(lp);
                 ((PageText)v).setIndex(postion);
-                v.invalidate();
                 return v;
             }
 
@@ -244,7 +247,7 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
         setAdapter(adapter);
     }
 
-    private void setText(final ImlAnalyze<ICharsAnalysisObtainer> imlAnalyze, final int textSize) {
+    private void setText(final ImlAnalyze<ISpanAnalysisObtainer> imlAnalyze, final int textSize) {
         stopAnalyze();
         analyzeCodeDictionary = new AnalyzeCodeDictionary(imlAnalyze);
         analyzeCodeDictionary.start();
@@ -254,17 +257,25 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                SelectSpanInfo selectSpanInfo = getSelectCharsInfo((int)event.getX() - getPaddingLeft(),
+                SelectSpanInfo downSelectSpanInfo = getSelectCharsInfo((int)event.getX() - getPaddingLeft(),
                         (int)event.getY() + getScrollY());
-                if (selectSpanInfo != null) {
-                    if (analysisInfo.charList.get(selectSpanInfo.charsIndex) instanceof char[]) {
+                if (downSelectSpanInfo != null) {
+                    if (analysisInfo.charList.get(downSelectSpanInfo.charsIndex) instanceof char[]) {
 
 //                        System.out.println("1..select: " + new String((char[])analysisInfo.charList.get(selectCharsInfo.charsIndex),
 //                                selectCharsInfo.start, selectCharsInfo.offset));
                     } else {
 //                        System.out.println("2..select: " + analysisInfo.charList.get(selectCharsInfo.charsIndex));
                     }
-                    setCursorPosition(selectSpanInfo);
+                    setCursorPosition(downSelectSpanInfo);
+                }
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                SelectSpanInfo moveSelectSpanInfo = getSelectCharsInfo((int)event.getX() - getPaddingLeft(),
+                        (int)event.getY() + getScrollY());
+                if (moveSelectSpanInfo != null) {
+
                 }
                 break;
         }
@@ -310,7 +321,7 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
                 }
                 if (lo != null) {
                     if (analysisInfo != null) {
-                        analysisInfo.measureWordHeight(0, mCursorPaint, lo.index);
+                        measureWordHeight(0, mCursorPaint, lo.index);
                     }
                     SpanInfo ci = null;
                     for (SpanInfo spanInfo : lo.data) {
@@ -340,14 +351,16 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
                                 selectSpanInfo.pageIndex = po.index;
                                 selectSpanInfo.start = ci.start + offset - 1;
                                 selectSpanInfo.offset = 1;
-                                float charWidth = mCursorPaint.measureText(chars, ci.start + offset - 1, 1);
-                                if ((relativeX - ci.x - measureWidth[0]) > charWidth/2) {
-                                    selectSpanInfo.cursorRelativeX = ci.x + mCursorPaint.measureText(chars, ci.start, offset);
-                                } else {
-                                    if (offset > 1) {
-                                        selectSpanInfo.cursorRelativeX = ci.x + mCursorPaint.measureText(chars, ci.start, offset - 1);
+                                if (blnCanCursorVisible) {
+                                    float charWidth = mCursorPaint.measureText(chars, ci.start + offset - 1, 1);
+                                    if ((relativeX - ci.x - measureWidth[0]) > charWidth/2) {
+                                        selectSpanInfo.cursorRelativeX = ci.x + mCursorPaint.measureText(chars, ci.start, offset);
                                     } else {
-                                        selectSpanInfo.cursorRelativeX = ci.x;
+                                        if (offset > 1) {
+                                            selectSpanInfo.cursorRelativeX = ci.x + mCursorPaint.measureText(chars, ci.start, offset - 1);
+                                        } else {
+                                            selectSpanInfo.cursorRelativeX = ci.x;
+                                        }
                                     }
                                 }
                             } else {
@@ -357,12 +370,13 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
                                 selectSpanInfo.pageIndex = po.index;
                                 selectSpanInfo.start = ci.start;
                                 selectSpanInfo.offset = 1;
-
-                                float charWidth = mCursorPaint.measureText(chars, ci.start, 1);
-                                if ((relativeX - ci.x) > charWidth/2) {
-                                    selectSpanInfo.cursorRelativeX = ci.x + mCursorPaint.measureText(chars, ci.start, 1);
-                                } else {
-                                   selectSpanInfo.cursorRelativeX = ci.x;
+                                if (blnCanCursorVisible) {
+                                    float charWidth = mCursorPaint.measureText(chars, ci.start, 1);
+                                    if ((relativeX - ci.x) > charWidth/2) {
+                                        selectSpanInfo.cursorRelativeX = ci.x + mCursorPaint.measureText(chars, ci.start, 1);
+                                    } else {
+                                        selectSpanInfo.cursorRelativeX = ci.x;
+                                    }
                                 }
                             }
                         } else if (analysisInfo.charList.get(ci.index) instanceof Character) {
@@ -371,11 +385,13 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
                             selectSpanInfo.charsIndex = ci.index;
                             selectSpanInfo.relativeLineIndex = po.data.indexOf(lo);
                             selectSpanInfo.pageIndex = po.index;
-                            float charWidth = mCursorPaint.measureText(character+"", ci.start, 1);
-                            if ((relativeX - ci.x) > charWidth/2) {
-                                selectSpanInfo.cursorRelativeX = ci.x + charWidth;
-                            } else {
-                                selectSpanInfo.cursorRelativeX = ci.x;
+                            if (blnCanCursorVisible) {
+                                float charWidth = mCursorPaint.measureText(character+"", ci.start, 1);
+                                if ((relativeX - ci.x) > charWidth/2) {
+                                    selectSpanInfo.cursorRelativeX = ci.x + charWidth;
+                                } else {
+                                    selectSpanInfo.cursorRelativeX = ci.x;
+                                }
                             }
                         }
                     }
@@ -384,6 +400,21 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
         }
 
         return selectSpanInfo;
+    }
+
+    private Path computeSelectRegion(SelectSpanInfo lastSelectSpanInfo, SelectSpanInfo currentSelectSpanInfo) {
+
+        if (lastSelectSpanInfo != null && currentSelectSpanInfo != null) {
+            if (lastSelectSpanInfo.pageIndex > currentSelectSpanInfo.pageIndex) {
+
+            } else if (currentSelectSpanInfo.pageIndex > lastSelectSpanInfo.pageIndex) {
+
+            } else {
+
+            }
+        }
+
+        return null;
     }
 
     private void clear() {
@@ -406,7 +437,7 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
             if (pageInfo != null && pageInfo.data != null) {
                 for (LinesInfo linesInfo : pageInfo.data) {
                     if (analysisInfo != null) {
-                        analysisInfo.measureWordHeight(0, mTextPaint, linesInfo.index);
+                        measureWordHeight(0, mTextPaint, linesInfo.index);
                     }
                     for (SpanInfo spanInfo : linesInfo.data) {
                         if (analysisInfo.colorMap.get(spanInfo.index) == null) {
@@ -429,7 +460,33 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
         }
     }
 
-    public static class TextHandler extends BaseHandler<TextScrollView> implements ICharsAnalysisObtainer {
+    private float measureWordHeight(float wordHeight, Paint paint, int lineIndex) {
+        if (resetPaint(paint, lineIndex) ) {
+            wordHeight = paint.getFontMetrics().bottom - paint.getFontMetrics().top;
+        }
+        return wordHeight;
+    }
+
+    private boolean resetPaint(Paint paint, int lineIndex) {
+        boolean result = false;
+        if (analysisInfo != null) {
+            Map<Integer, Integer> textSizeMap = analysisInfo.textSizeMap;
+            if (textSizeMap != null && paint != null) {
+                Integer textSize = textSizeMap.get(lineIndex);
+                Integer defaultTextSize = textSizeMap.get(-1);
+                if (textSize != null && (int) paint.getTextSize() != textSize) {
+                    paint.setTextSize(textSize);
+                    result = true;
+                } else if (defaultTextSize != null && (int) paint.getTextSize() != defaultTextSize) {
+                    paint.setTextSize(textSizeMap.get(-1));
+                    result = true;
+                }
+            }
+        }
+        return result;
+    }
+
+    public static class TextHandler extends BaseHandler<TextScrollView> implements ISpanAnalysisObtainer {
 
         public final static int ANALYSIS_TEXT_FINISH = 0x001;
         public final static int PARARSE_START = 0x002;
@@ -553,6 +610,10 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
         int charsIndex;
         int start = -1;
         int offset = -1;
+        /**
+         * 光标x坐标
+         * cursor's x
+         */
         float cursorRelativeX;
     }
 

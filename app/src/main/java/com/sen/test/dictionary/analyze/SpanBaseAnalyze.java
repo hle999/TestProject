@@ -1,13 +1,13 @@
 package com.sen.test.dictionary.analyze;
 
-import com.sen.test.dictionary.view.ICharsAnalysisObtainer;
+import com.sen.test.dictionary.view.ISpanAnalysisObtainer;
 
 
 /**
  * Editor: sgc
  * Date: 2015/01/20
  */
-public abstract class SpanBaseAnalyze implements ImlAnalyze<ICharsAnalysisObtainer> {
+public abstract class SpanBaseAnalyze implements ImlAnalyze<ISpanAnalysisObtainer> {
 
     /**
      * 数据
@@ -22,15 +22,15 @@ public abstract class SpanBaseAnalyze implements ImlAnalyze<ICharsAnalysisObtain
     /**
      * 计算字体位置和颜色的监听器
      */
-    private ICharsAnalysisObtainer iCharsAnalysisObtainer = null;
+    private ISpanAnalysisObtainer iSpanAnalysisObtainer = null;
 
     public SpanBaseAnalyze(byte[] byteBuffer){
         this.byteBuffer = byteBuffer;
     }
 
     @Override
-    public void setObtainer(ICharsAnalysisObtainer iCharsAnalysisObtainer) {
-        this.iCharsAnalysisObtainer = iCharsAnalysisObtainer;
+    public void setObtainer(ISpanAnalysisObtainer iSpanAnalysisObtainer) {
+        this.iSpanAnalysisObtainer = iSpanAnalysisObtainer;
     }
 
     @Override
@@ -40,7 +40,7 @@ public abstract class SpanBaseAnalyze implements ImlAnalyze<ICharsAnalysisObtain
          * step 2
          */
         filterExplain(byteBuffer);
-        iCharsAnalysisObtainer = null;
+        iSpanAnalysisObtainer = null;
         byteBuffer = null;
         isStop = true;
     }
@@ -52,7 +52,7 @@ public abstract class SpanBaseAnalyze implements ImlAnalyze<ICharsAnalysisObtain
 
     @Override
     public void clear() {
-        iCharsAnalysisObtainer = null;
+        iSpanAnalysisObtainer = null;
         byteBuffer = null;
     }
 
@@ -60,8 +60,8 @@ public abstract class SpanBaseAnalyze implements ImlAnalyze<ICharsAnalysisObtain
         return isStop;
     }
 
-    public ICharsAnalysisObtainer getObtainer() {
-        return iCharsAnalysisObtainer;
+    public ISpanAnalysisObtainer getObtainer() {
+        return iSpanAnalysisObtainer;
     }
 
     public abstract void filterExplain(byte[] byteBuffer);

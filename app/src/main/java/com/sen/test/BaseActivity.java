@@ -11,6 +11,7 @@ import com.google.inject.Key;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.jpush.android.api.JPushInterface;
 import roboguice.RoboGuice;
 import roboguice.activity.event.OnActivityResultEvent;
 import roboguice.activity.event.OnConfigurationChangedEvent;
@@ -41,8 +42,8 @@ public class BaseActivity extends ActionBarActivity implements RoboContext {
         final RoboInjector injector = RoboGuice.getInjector(this);
         eventManager = injector.getInstance( EventManager.class );
         injector.injectMembersWithoutViews( this );
-        super.onCreate( savedInstanceState );
-        eventManager.fire( new OnCreateEvent( savedInstanceState ) );
+        super.onCreate(savedInstanceState);
+        eventManager.fire(new OnCreateEvent(savedInstanceState));
     }
 
     @Override
@@ -63,14 +64,14 @@ public class BaseActivity extends ActionBarActivity implements RoboContext {
     protected void onResume() {
 
         super.onResume();
-        eventManager.fire( new OnResumeEvent() );
+        eventManager.fire(new OnResumeEvent());
     }
 
     @Override
     protected void onPause() {
 
         super.onPause();
-        eventManager.fire( new OnPauseEvent() );
+        eventManager.fire(new OnPauseEvent());
     }
 
     @Override

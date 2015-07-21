@@ -15,8 +15,8 @@ public class BaseHandler<T> extends Handler {
 
     private WeakReference<T> mReference;
 
-    public BaseHandler(T mTextScrollView) {
-        mReference = new WeakReference<>(mTextScrollView);
+    public BaseHandler(T t) {
+        mReference = new WeakReference<>(t);
     }
 
     public WeakReference<T> getReference() {

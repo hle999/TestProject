@@ -6,19 +6,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import com.sen.test.MaterialDesignActivity;
 import com.sen.test.R;
 import com.sen.test.adapter.ProjectItemsAdapter;
-import com.sen.test.ui.work.ApiCloudFragment;
 import com.sen.test.ui.work.DictionaryDataFragment;
 import com.sen.test.ui.work.MenuChooseFragment;
+import com.sen.test.ui.work.LearnCloudFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -142,6 +139,10 @@ public class MainFragment extends Fragment implements ProjectItemsAdapter.OnItem
 
             case R.string.project_api_cloud:
                 BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new MenuChooseFragment(), null);
+                break;
+
+            case R.string.project_learn_cloud:
+                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new LearnCloudFragment(), null);
                 break;
         }
 

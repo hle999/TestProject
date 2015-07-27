@@ -15,7 +15,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER"/>
 
-    <application
+    <com.sen.test.MyApplication
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:theme="@style/AppBaseTheme"
@@ -48,6 +48,17 @@
         <provider
             android:authorities="@string/provider_authority"
             android:name="com.sen.test.provider.TestProvider"></provider>
-    </application>
+
+        <service android:name="com.avos.avoscloud.PushService"
+            android:exported="true" />
+
+        <receiver android:name="com.avos.avoscloud.AVBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+
+    </com.sen.test.MyApplication>
 
 </manifest>

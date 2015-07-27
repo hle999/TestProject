@@ -3,6 +3,7 @@ package com.sen.test.ui.fragment;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.sen.lib.graphics.TransitionalColor;
 import com.sen.lib.support.CustomViewPager;
 import com.sen.lib.view.BaseItemAdapter;
 import com.sen.lib.view.HorizontalItemTab;
@@ -22,6 +24,7 @@ import com.sen.lib.view.VerticalScrollWidget;
 import com.sen.test.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 15-4-20.
@@ -83,7 +86,7 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
     private void initHorizonScroll(View view) {
 
         horizontalScrollView = (HorizontalItemTab) view.findViewById(R.id.scroll_items);
-        horizontalScrollView.getItemGroup().setBackgroundColor(Color.BLUE);
+//        horizontalScrollView.getItemGroup().setBackgroundColor(Color.BLUE);
         horizontalScrollView.setAdapter(new HorizontalAdapter());
         viewPager.addPagerChangeListener(horizontalScrollView);
 
@@ -185,7 +188,7 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
         @Override
         public View getView(View v, ViewGroup container, int postion) {
             if (v == null) {
-                v = new TextView(container.getContext());
+                v = new Text(container.getContext());
 
 //                    v.setBackgroundColor(Color.BLUE);
             }

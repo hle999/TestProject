@@ -10,6 +10,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.sen.test.R;
 
 import java.io.BufferedOutputStream;
@@ -22,6 +29,7 @@ import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
+import java.net.URI;
 import java.net.URL;
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -36,6 +44,7 @@ public class JFragment extends BaseFragment implements View.OnClickListener {
     private static final int LOAD_SUCCESS = 0x02;
     private static final int LOAD_FAILDED = 0x03;
     private static final int HAS_DOWNLOAD = 0x04;
+    private RequestQueue requestQueue;
 
     private String DOWNLOAD_URL = "http://gdown.baidu.com/data/wisegame/332f98a0e4c843c6/biyingcidian_4010.apk";
 
@@ -80,7 +89,22 @@ public class JFragment extends BaseFragment implements View.OnClickListener {
         textView = (TextView) view.findViewById(R.id.textview_percent);
         retry = (Button) view.findViewById(R.id.button_retry);
         retry.setOnClickListener(this);
-        new DownLoadTread().start();
+//        new DownLoadTread().start();
+        requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(new StringRequest(Request.Method.POST, "http://www.baidu.com", new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                System.out.println("Success............");
+                System.out.println(s);
+                System.out.println("End............");
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                System.out.println(volleyError.getMessage());
+            }
+        }));
+
         return view;
     }
 

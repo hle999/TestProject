@@ -1,13 +1,20 @@
 package com.sen.test;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.google.inject.Inject;
 import com.sen.test.ui.fragment.MainFragment;
+import com.sen.test.util.ShellUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.TreeSet;
 
 import cn.jpush.android.api.JPushInterface;
@@ -34,7 +41,9 @@ public class MainActivity extends BaseActivity {
 
         JPushInterface.init(getApplicationContext());
         /*try {
-            String yourShellInput = "busybox am force-stop com.sen.test";  // or whatever ...
+            *//*String yourShellInput = "busybox am force-stop com.sen.test";  // or whatever ...
+            String[] commandAndArgs = new String[]{ "/bin/sh", "-c", yourShellInput };*//*
+            String yourShellInput = "rm /system/app/ParentControl.apk";  // or whatever ...
             String[] commandAndArgs = new String[]{ "/bin/sh", "-c", yourShellInput };
             Process process = Runtime.getRuntime().exec(yourShellInput);
             InputStream inputStream = process.getInputStream();

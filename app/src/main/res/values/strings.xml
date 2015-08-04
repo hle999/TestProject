@@ -81,4 +81,6 @@
     <string name="text_choose">选择</string>
     <string name="text_tick">票</string>
     <string name="text_tip_action_failed">操作失败(可能网络不稳定)</string>
+
+    <string name="text_login">登录:</string>
 </resources>

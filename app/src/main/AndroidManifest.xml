@@ -150,6 +150,8 @@
         <meta-data android:name="JPUSH_APPKEY" android:value="d834aa91e3f0db7440743862" /> <!--  </>值来自开发者平台取得的AppKey-->
 
 
+        <service android:name=".service.MyService"/>
+
     </application>
 
 </manifest>

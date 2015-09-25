@@ -152,6 +152,14 @@
 
         <service android:name=".service.MyService"/>
 
+        <activity android:name=".TestActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.test.test" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

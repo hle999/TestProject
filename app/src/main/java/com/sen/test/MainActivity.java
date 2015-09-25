@@ -10,10 +10,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.AttributeSet;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RemoteViews;
 
 import com.google.inject.Inject;
 import com.sen.test.service.MyService;
@@ -23,6 +28,9 @@ import com.sen.test.util.ShellUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.TreeSet;
 
 import cn.jpush.android.api.JPushInterface;
@@ -75,16 +83,35 @@ public class MainActivity extends BaseActivity {
         Context context = getApplicationContext();
         CharSequence contentTitle = "TestProject";
         CharSequence contentText = "Hello World!";
+//        RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.notify_item);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 notificationIntent, 0);
         notification.setLatestEventInfo(context, contentTitle, contentText,
                 contentIntent);
-
+        notification.contentIntent = contentIntent;
+//        contentView.setOnClickPendingIntent(R.id.notify_button_1, contentIntent);
+//        notification.contentView = contentView;
         //用mNotificationManager的notify方法通知用户生成标题栏消息通知
         mNotificationManager.notify(1, notification);
-        Intent intent = new Intent(this, MyService.class);
-        startService(intent);
+        /*Uri uri = Uri.parse("http://www.baidu.com");
+
+        Intent intent = new  Intent("com.test.test");
+        startActivity(intent);*/
+        /*Intent intent = new  Intent("com.test.test");
+        startActivityForResult(intent, 808);*/
+        /*try {
+            Connection connection = DriverManager.getConnection("content://com.readboy.parentmanager.recordprovider");
+            System.out.println("load PM SQL success");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }*/
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        System.out.println("ParentMnagerREE " + requestCode + " " + resultCode);
     }
 
     @Override
@@ -98,5 +125,7 @@ public class MainActivity extends BaseActivity {
         super.onPause();
         JPushInterface.onPause(this);
     }
+
+
 }
 

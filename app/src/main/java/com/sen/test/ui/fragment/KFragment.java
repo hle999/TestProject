@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,7 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
         viewPager = (CustomViewPager)view.findViewById(R.id.scroll_viewpager);
         testPageAdapter = new TestPageAdapter(getFragmentManager());
         viewPager.setAdapter(testPageAdapter);
+        viewPager.setPageTransformer(true, new TestPageTransformer());
         if (view.findViewById(R.id.scroll_items) instanceof HorizontalItemTab) {
             initHorizonScroll(view);
         } else {
@@ -134,7 +136,6 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
         @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
-            System.out.println("drawing... " + getText());
         }
     }
 
@@ -218,4 +219,12 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
             return testPageAdapter.getCount();
         }
     };
+
+    class TestPageTransformer implements ViewPager.PageTransformer {
+
+        @Override
+        public void transformPage(View page, float position) {
+            System.out.println("Page: "+page+" "+position);
+        }
+    }
 }

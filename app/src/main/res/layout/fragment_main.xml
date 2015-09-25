@@ -14,14 +14,5 @@
         android:paddingBottom="@dimen/margin_space"
         android:scrollbars="vertical"
         />
-    
-    <com.sen.lib.graphics.BlurringView
-        android:id="@+id/blurring"
-        android:layout_width="500dp"
-        android:layout_height="500dp"
-        android:layout_gravity="center"
-        blur:blurRadius="11"
-        blur:downsampleFactor="1"
-        blur:overlayColor="#99FFFFFF"/>
 
 </FrameLayout>

@@ -46,7 +46,6 @@ public class EFragment extends Fragment {
         stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, invertedDrawable1);
         stateListDrawable.addState(new int[]{-android.R.attr.state_pressed}, invertedDrawable2);
         view.findViewById(R.id.efragment_img).setBackground(stateListDrawable);
-
         return view;
     }
 }

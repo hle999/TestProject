@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.sen.lib.graphics.BlurringView;
 import com.sen.test.MaterialDesignActivity;
 import com.sen.test.R;
+import com.sen.test.TestActivity;
 import com.sen.test.adapter.ProjectItemsAdapter;
 import com.sen.test.ui.work.DictionaryDataFragment;
 import com.sen.test.ui.work.MenuChooseFragment;
@@ -55,15 +56,6 @@ public class MainFragment extends Fragment implements ProjectItemsAdapter.OnItem
         }
         projectItemsAdapter.setData(data);
         projectItemsAdapter.notifyDataSetChanged();
-//
-        ((BlurringView)view.findViewById(R.id.blurring)).setBlurredView(view.findViewById(R.id.project_items_list));
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                view.findViewById(R.id.blurring).invalidate();
-
-            }
-        });
         return view;
     }
 

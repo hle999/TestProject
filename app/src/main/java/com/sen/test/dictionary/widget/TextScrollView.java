@@ -5,6 +5,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PathDashPathEffect;
+import android.graphics.PathEffect;
+import android.graphics.RectF;
+import android.graphics.Xfermode;
 import android.os.Message;
 import android.os.Parcelable;
 import android.os.SystemClock;
@@ -32,11 +36,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Sen on 2015/6/15.
  */
-public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<Integer>{
+public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<Integer> {
 
     private final static int CURSOR_ELAPSE_TIME = 500;
 
@@ -82,6 +88,11 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
     private Path pathSelectRegion;
 
     private long lngCursorLastTime = SystemClock.elapsedRealtime();
+    private SelectSingleSpanInfo downSelectSingleSpanInfo;
+    private SelectSingleSpanInfo moveSelectSingleSpanInfo;
+    private ExecutorService singleExecutor;
+    private RectF[] selectBackgroundRectFArray;
+
 
     public int getTextSize() {
         return textSize;
@@ -183,6 +194,16 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        if (selectBackgroundRectFArray != null) {
+            Paint backgroundPaint = new Paint();
+            backgroundPaint.setColor(Color.YELLOW);
+            for (RectF rectF : selectBackgroundRectFArray) {
+                if (rectF != null) {
+                    canvas.drawRect(rectF, backgroundPaint);
+                }
+            }
+        }
+
         if (blnCanCursorVisible) {
             long currentTime = SystemClock.elapsedRealtime();
             if ((currentTime - lngCursorLastTime) > CURSOR_ELAPSE_TIME) {
@@ -205,6 +226,7 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
 
     private void init() {
 
+        singleExecutor = Executors.newSingleThreadExecutor();
         mTextPaint = new Paint();
         mTextPaint.setTextSize(textSize);
         mTextPaint.setColor(Color.BLACK);
@@ -222,7 +244,7 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
             public View getView(View v, ViewGroup container, int postion) {
                 if (v == null) {
                     v = new PageText(container.getContext());
-                    ((PageText)v).setImlDrawText(TextScrollView.this);
+                    ((PageText) v).setImlDrawText(TextScrollView.this);
                 }
 
                 ViewGroup.LayoutParams lp = v.getLayoutParams();
@@ -232,7 +254,7 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
                 lp.width = pageList.get(postion).width;
                 lp.height = pageList.get(postion).height;
                 v.setLayoutParams(lp);
-                ((PageText)v).setIndex(postion);
+                ((PageText) v).setIndex(postion);
                 return v;
             }
 
@@ -257,35 +279,56 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                SelectSpanInfo downSelectSpanInfo = getSelectCharsInfo((int)event.getX() - getPaddingLeft(),
-                        (int)event.getY() + getScrollY());
-                if (downSelectSpanInfo != null) {
-                    if (analysisInfo.charList.get(downSelectSpanInfo.charsIndex) instanceof char[]) {
+                downSelectSingleSpanInfo = getSelectCharsInfo((int) event.getX() - getPaddingLeft(),
+                        (int) event.getY() + getScrollY());
+                if (downSelectSingleSpanInfo != null) {
+                    /*if (analysisInfo.charList.get(downSelectSingleSpanInfo.charsIndex) instanceof char[]) {
 
-//                        System.out.println("1..select: " + new String((char[])analysisInfo.charList.get(selectCharsInfo.charsIndex),
-//                                selectCharsInfo.start, selectCharsInfo.offset));
+                        System.out.println("1..select: " + new String((char[])analysisInfo.charList.get(selectCharsInfo.charsIndex),
+                                selectCharsInfo.start, selectCharsInfo.offset));
                     } else {
-//                        System.out.println("2..select: " + analysisInfo.charList.get(selectCharsInfo.charsIndex));
-                    }
-                    setCursorPosition(downSelectSpanInfo);
+                        System.out.println("2..select: " + analysisInfo.charList.get(selectCharsInfo.charsIndex));
+                    }*/
+                    setCursorPosition(downSelectSingleSpanInfo);
                 }
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                SelectSpanInfo moveSelectSpanInfo = getSelectCharsInfo((int)event.getX() - getPaddingLeft(),
-                        (int)event.getY() + getScrollY());
-                if (moveSelectSpanInfo != null) {
-
+                SelectSingleSpanInfo tempMoveSelectSingleSpanInfo = getSelectCharsInfo((int) event.getX() - getPaddingLeft(),
+                        (int) event.getY() + getScrollY());
+                if (tempMoveSelectSingleSpanInfo != null) {
+                    if (moveSelectSingleSpanInfo == null || (moveSelectSingleSpanInfo != null &&
+                            (moveSelectSingleSpanInfo.start != tempMoveSelectSingleSpanInfo.start
+                                    || moveSelectSingleSpanInfo.charsIndex != tempMoveSelectSingleSpanInfo.charsIndex
+                                    || moveSelectSingleSpanInfo.relativeLineIndex != tempMoveSelectSingleSpanInfo.relativeLineIndex
+                                    || moveSelectSingleSpanInfo.pageIndex != tempMoveSelectSingleSpanInfo.pageIndex))) {
+                        moveSelectSingleSpanInfo = tempMoveSelectSingleSpanInfo;
+                        computeSelectRegion(downSelectSingleSpanInfo, moveSelectSingleSpanInfo);
+                    }
                 }
+                break;
+
+            case MotionEvent.ACTION_UP:
+
+
+                downSelectSingleSpanInfo = null;
+                moveSelectSingleSpanInfo = null;
+                break;
+
+            case MotionEvent.ACTION_CANCEL:
+
+
+                downSelectSingleSpanInfo = null;
+                moveSelectSingleSpanInfo = null;
                 break;
         }
     }
 
-    private void setCursorPosition(SelectSpanInfo selectSpanInfo) {
-        if (selectSpanInfo != null) {
+    private void setCursorPosition(SelectSingleSpanInfo selectSingleSpanInfo) {
+        if (selectSingleSpanInfo != null) {
             mCursorPaint.setStrokeWidth(mCursorPaint.getStrokeMiter());
-            cursorStartX = getPaddingLeft() + selectSpanInfo.cursorRelativeX;
-            cursorStartY = pageList.get(selectSpanInfo.pageIndex).y + pageList.get(selectSpanInfo.pageIndex).data.get(selectSpanInfo.relativeLineIndex).y;
+            cursorStartX = getPaddingLeft() + selectSingleSpanInfo.cursorRelativeX;
+            cursorStartY = pageList.get(selectSingleSpanInfo.pageIndex).y + pageList.get(selectSingleSpanInfo.pageIndex).data.get(selectSingleSpanInfo.relativeLineIndex).y;
             cursorEndX = cursorStartX;
             cursorEndY = cursorStartY + mCursorPaint.getFontMetrics().bottom - mCursorPaint.getFontMetrics().top;
         }
@@ -297,8 +340,8 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
         }
     }
 
-    private SelectSpanInfo getSelectCharsInfo(int relativeX, int relativeY) {
-        SelectSpanInfo selectSpanInfo = null;
+    private SelectSingleSpanInfo getSelectCharsInfo(int relativeX, int relativeY) {
+        SelectSingleSpanInfo selectSingleSpanInfo = null;
         if (pageList != null) {
             PageInfo po = null;
             for (PageInfo pageInfo : pageList) {
@@ -336,7 +379,7 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
                     if (ci != null) {
                         float[] measureWidth = new float[1];
                         if (analysisInfo.charList.get(ci.index) instanceof char[]) {
-                            char[] chars = (char[])analysisInfo.charList.get(ci.index);
+                            char[] chars = (char[]) analysisInfo.charList.get(ci.index);
                             int offset = mCursorPaint.breakText(chars,
                                     ci.start, ci.offset, relativeX - ci.x, measureWidth);
                             if (offset > 0) {
@@ -345,52 +388,72 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
                                         offset++;
                                     }
                                 }
-                                selectSpanInfo = new SelectSpanInfo();
-                                selectSpanInfo.charsIndex = ci.index;
-                                selectSpanInfo.relativeLineIndex = po.data.indexOf(lo);
-                                selectSpanInfo.pageIndex = po.index;
-                                selectSpanInfo.start = ci.start + offset - 1;
-                                selectSpanInfo.offset = 1;
+                                selectSingleSpanInfo = new SelectSingleSpanInfo();
+                                selectSingleSpanInfo.charsIndex = ci.index;
+                                selectSingleSpanInfo.relativeLineIndex = po.data.indexOf(lo);
+                                selectSingleSpanInfo.pageIndex = po.index;
+                                selectSingleSpanInfo.start = ci.start + offset - 1;
+                                selectSingleSpanInfo.offset = 1;
+                                float charWidth = mCursorPaint.measureText(chars, ci.start + offset - 1, 1);
+                                float charHeight = mCursorPaint.getFontMetrics().bottom - mCursorPaint.getFontMetrics().top;
+                                float charX = getPaddingLeft();
+                                if (offset > 1) {
+                                    charX += ci.x + mCursorPaint.measureText(chars, ci.start, offset - 1);
+                                } else {
+                                    charX += ci.x;
+                                }
+                                float charY = lo.y + po.y;
+                                selectSingleSpanInfo.singleCharRectF = new RectF(charX, charY, charX + charWidth, charY + charHeight);
+
                                 if (blnCanCursorVisible) {
-                                    float charWidth = mCursorPaint.measureText(chars, ci.start + offset - 1, 1);
-                                    if ((relativeX - ci.x - measureWidth[0]) > charWidth/2) {
-                                        selectSpanInfo.cursorRelativeX = ci.x + mCursorPaint.measureText(chars, ci.start, offset);
+                                    if ((relativeX - ci.x - measureWidth[0]) > charWidth / 2) {
+                                        selectSingleSpanInfo.cursorRelativeX = ci.x + mCursorPaint.measureText(chars, ci.start, offset);
                                     } else {
                                         if (offset > 1) {
-                                            selectSpanInfo.cursorRelativeX = ci.x + mCursorPaint.measureText(chars, ci.start, offset - 1);
+                                            selectSingleSpanInfo.cursorRelativeX = ci.x + mCursorPaint.measureText(chars, ci.start, offset - 1);
                                         } else {
-                                            selectSpanInfo.cursorRelativeX = ci.x;
+                                            selectSingleSpanInfo.cursorRelativeX = ci.x;
                                         }
                                     }
                                 }
                             } else {
-                                selectSpanInfo = new SelectSpanInfo();
-                                selectSpanInfo.charsIndex = ci.index;
-                                selectSpanInfo.relativeLineIndex = po.data.indexOf(lo);
-                                selectSpanInfo.pageIndex = po.index;
-                                selectSpanInfo.start = ci.start;
-                                selectSpanInfo.offset = 1;
+                                selectSingleSpanInfo = new SelectSingleSpanInfo();
+                                selectSingleSpanInfo.charsIndex = ci.index;
+                                selectSingleSpanInfo.relativeLineIndex = po.data.indexOf(lo);
+                                selectSingleSpanInfo.pageIndex = po.index;
+                                selectSingleSpanInfo.start = ci.start;
+                                selectSingleSpanInfo.offset = 1;
+                                float charWidth = mCursorPaint.measureText(chars, ci.start, 1);
+                                float charHeight = mCursorPaint.getFontMetrics().bottom - mCursorPaint.getFontMetrics().top;
+                                float charX = getPaddingLeft() + ci.x;
+                                float charY = lo.y + po.y;
+                                selectSingleSpanInfo.singleCharRectF = new RectF(charX, charY, charX + charWidth, charY + charHeight);
+
                                 if (blnCanCursorVisible) {
-                                    float charWidth = mCursorPaint.measureText(chars, ci.start, 1);
-                                    if ((relativeX - ci.x) > charWidth/2) {
-                                        selectSpanInfo.cursorRelativeX = ci.x + mCursorPaint.measureText(chars, ci.start, 1);
+                                    if ((relativeX - ci.x) > charWidth / 2) {
+                                        selectSingleSpanInfo.cursorRelativeX = ci.x + mCursorPaint.measureText(chars, ci.start, 1);
                                     } else {
-                                        selectSpanInfo.cursorRelativeX = ci.x;
+                                        selectSingleSpanInfo.cursorRelativeX = ci.x;
                                     }
                                 }
                             }
                         } else if (analysisInfo.charList.get(ci.index) instanceof Character) {
-                            Character character = (Character)analysisInfo.charList.get(ci.index);
-                            selectSpanInfo = new SelectSpanInfo();
-                            selectSpanInfo.charsIndex = ci.index;
-                            selectSpanInfo.relativeLineIndex = po.data.indexOf(lo);
-                            selectSpanInfo.pageIndex = po.index;
+                            Character character = (Character) analysisInfo.charList.get(ci.index);
+                            selectSingleSpanInfo = new SelectSingleSpanInfo();
+                            selectSingleSpanInfo.charsIndex = ci.index;
+                            selectSingleSpanInfo.relativeLineIndex = po.data.indexOf(lo);
+                            selectSingleSpanInfo.pageIndex = po.index;
+                            float charWidth = mCursorPaint.measureText(character + "", ci.start, 1);
+                            float charHeight = mCursorPaint.getFontMetrics().bottom - mCursorPaint.getFontMetrics().top;
+                            float charX = getPaddingLeft() + ci.x;
+                            float charY = lo.y + po.y;
+                            selectSingleSpanInfo.singleCharRectF = new RectF(charX, charY, charX + charWidth, charY + charHeight);
+
                             if (blnCanCursorVisible) {
-                                float charWidth = mCursorPaint.measureText(character+"", ci.start, 1);
-                                if ((relativeX - ci.x) > charWidth/2) {
-                                    selectSpanInfo.cursorRelativeX = ci.x + charWidth;
+                                if ((relativeX - ci.x) > charWidth / 2) {
+                                    selectSingleSpanInfo.cursorRelativeX = ci.x + charWidth;
                                 } else {
-                                    selectSpanInfo.cursorRelativeX = ci.x;
+                                    selectSingleSpanInfo.cursorRelativeX = ci.x;
                                 }
                             }
                         }
@@ -399,22 +462,16 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
             }
         }
 
-        return selectSpanInfo;
+        return selectSingleSpanInfo;
     }
 
-    private Path computeSelectRegion(SelectSpanInfo lastSelectSpanInfo, SelectSpanInfo currentSelectSpanInfo) {
+    private void computeSelectRegion(SelectSingleSpanInfo downSelectSingleSpanInfo, SelectSingleSpanInfo moveSelectSingleSpanInfo) {
 
-        if (lastSelectSpanInfo != null && currentSelectSpanInfo != null) {
-            if (lastSelectSpanInfo.pageIndex > currentSelectSpanInfo.pageIndex) {
-
-            } else if (currentSelectSpanInfo.pageIndex > lastSelectSpanInfo.pageIndex) {
-
-            } else {
-
-            }
+        if (singleExecutor != null) {
+            CaculateSelectionRegion caculateSelectionRegion = new CaculateSelectionRegion(downSelectSingleSpanInfo, moveSelectSingleSpanInfo);
+            singleExecutor.execute(caculateSelectionRegion);
         }
-
-        return null;
+//        return null;
     }
 
     private void clear() {
@@ -451,7 +508,7 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
                             canvas.drawText((char[]) objectLists.get(spanInfo.index), spanInfo.start,
                                     spanInfo.offset, spanInfo.x, linesInfo.y - mTextPaint.getFontMetrics().top, mTextPaint);
                         } else if (objectLists.get(spanInfo.index) instanceof Character) {
-                            canvas.drawText(objectLists.get(spanInfo.index)+"", spanInfo.start,
+                            canvas.drawText(objectLists.get(spanInfo.index) + "", spanInfo.start,
                                     spanInfo.offset, spanInfo.x, linesInfo.y - mTextPaint.getFontMetrics().top, mTextPaint);
                         }
                     }
@@ -461,7 +518,7 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
     }
 
     private float measureWordHeight(float wordHeight, Paint paint, int lineIndex) {
-        if (resetPaint(paint, lineIndex) ) {
+        if (resetPaint(paint, lineIndex)) {
             wordHeight = paint.getFontMetrics().bottom - paint.getFontMetrics().top;
         }
         return wordHeight;
@@ -491,6 +548,7 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
         public final static int ANALYSIS_TEXT_FINISH = 0x001;
         public final static int PARARSE_START = 0x002;
         public final static int PARARSE_CHARS = 0x003;
+        public final static int DRAW_SELECT_BACKGROUND = 0x004;
 
         private ParaseWorker paraseWorker;
 
@@ -516,7 +574,7 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
 
                     case PARARSE_START:
                         if (mTextScrollView != null && msg.obj instanceof AnalysisInfo) {
-                            mTextScrollView.analysisInfo = (AnalysisInfo)msg.obj;
+                            mTextScrollView.analysisInfo = (AnalysisInfo) msg.obj;
                             mTextScrollView.analysisInfo.textSizeMap = new HashMap<>();
                             mTextScrollView.analysisInfo.textSizeMap.put(-1, mTextScrollView.textSize);
                             if (mTextScrollView.changeLine != -1 && mTextScrollView.changeTextSize > 0) {
@@ -538,7 +596,7 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
                         break;
 
                     case PARARSE_CHARS:
-                        List<LinesInfo> data = (List<LinesInfo>)msg.obj;
+                        List<LinesInfo> data = (List<LinesInfo>) msg.obj;
                         if (mTextScrollView != null && mTextScrollView.analysisInfo != null) {
                         }
                         if (msg.getData() != null) {
@@ -583,12 +641,198 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
                             data.clear();
                         }
                         break;
+
+                    case DRAW_SELECT_BACKGROUND:
+                        if (mTextScrollView != null &&
+                                msg.obj instanceof RectF[]) {
+                            mTextScrollView.selectBackgroundRectFArray = (RectF[])msg.obj;
+                            mTextScrollView.invalidate();
+                        }
+                        break;
                 }
             }
         }
     }
 
-    private class PageInfo {
+    class CaculateSelectionRegion implements Runnable {
+
+        SelectSingleSpanInfo rStartSelectSingleSpanInfo;
+        SelectSingleSpanInfo rEndSelectSingleSpanInfo;
+
+        CaculateSelectionRegion(SelectSingleSpanInfo rStartSelectSingleSpanInfo, SelectSingleSpanInfo rEndSelectSingleSpanInfo) {
+            this.rStartSelectSingleSpanInfo = rStartSelectSingleSpanInfo;
+            this.rEndSelectSingleSpanInfo = rEndSelectSingleSpanInfo;
+        }
+
+        @Override
+        public void run() {
+            RectF[] rectFArray = selecetBackground();
+            if (mHandler != null) {
+                mHandler.sendMessages(TextHandler.DRAW_SELECT_BACKGROUND, rectFArray, 0, 0, 0);
+            }
+            String selectStr = getSelectString();
+            System.out.println("TextScrollView: " + selectStr);
+            rStartSelectSingleSpanInfo = null;
+            rEndSelectSingleSpanInfo = null;
+        }
+
+        RectF[] selecetBackground() {
+            RectF[] rectFArray = new RectF[3];
+            if (rStartSelectSingleSpanInfo != null && rEndSelectSingleSpanInfo != null) {
+                if (rStartSelectSingleSpanInfo.pageIndex > rEndSelectSingleSpanInfo.pageIndex) {
+                    RectF firstRectF = new RectF(getPaddingLeft(), rEndSelectSingleSpanInfo.singleCharRectF.bottom,
+                            rStartSelectSingleSpanInfo.singleCharRectF.right, rStartSelectSingleSpanInfo.singleCharRectF.bottom);
+                    RectF sencondRecF = new RectF(rEndSelectSingleSpanInfo.singleCharRectF.left, rEndSelectSingleSpanInfo.singleCharRectF.top,
+                            getWidth() - getPaddingRight(), rStartSelectSingleSpanInfo.singleCharRectF.top);
+                    rectFArray[0] = firstRectF;
+                    rectFArray[1] = sencondRecF;
+                    if (sencondRecF.left > firstRectF.right) {
+                        RectF thirdRectF = new RectF(firstRectF.right, firstRectF.top, sencondRecF.left, sencondRecF.bottom);
+                        rectFArray[2] = thirdRectF;
+                    }
+                } else if (rEndSelectSingleSpanInfo.pageIndex > rStartSelectSingleSpanInfo.pageIndex) {
+                    RectF firstRectF = new RectF(getPaddingLeft(), rStartSelectSingleSpanInfo.singleCharRectF.bottom,
+                            rEndSelectSingleSpanInfo.singleCharRectF.right, rEndSelectSingleSpanInfo.singleCharRectF.bottom);
+                    RectF sencondRecF = new RectF(rStartSelectSingleSpanInfo.singleCharRectF.left, rStartSelectSingleSpanInfo.singleCharRectF.top,
+                            getWidth() - getPaddingRight(), rEndSelectSingleSpanInfo.singleCharRectF.top);
+                    rectFArray[0] = firstRectF;
+                    rectFArray[1] = sencondRecF;
+                    if (sencondRecF.left > firstRectF.right) {
+                        RectF thirdRectF = new RectF(firstRectF.right, firstRectF.top, sencondRecF.left, sencondRecF.bottom);
+                        rectFArray[2] = thirdRectF;
+                    }
+                } else {
+                    if (rStartSelectSingleSpanInfo.relativeLineIndex > rEndSelectSingleSpanInfo.relativeLineIndex) {
+                        RectF firstRectF = new RectF(getPaddingLeft(), rEndSelectSingleSpanInfo.singleCharRectF.bottom,
+                                rStartSelectSingleSpanInfo.singleCharRectF.right, rStartSelectSingleSpanInfo.singleCharRectF.bottom);
+                        RectF sencondRecF = new RectF(rEndSelectSingleSpanInfo.singleCharRectF.left, rEndSelectSingleSpanInfo.singleCharRectF.top,
+                                getWidth() - getPaddingRight(), rStartSelectSingleSpanInfo.singleCharRectF.top);
+                        rectFArray[0] = firstRectF;
+                        rectFArray[1] = sencondRecF;
+                        if (sencondRecF.left > firstRectF.right) {
+                            RectF thirdRectF = new RectF(firstRectF.right, firstRectF.top, sencondRecF.left, sencondRecF.bottom);
+                            rectFArray[2] = thirdRectF;
+                        }
+                    } else if (rEndSelectSingleSpanInfo.relativeLineIndex > rStartSelectSingleSpanInfo.relativeLineIndex) {
+                        RectF firstRectF = new RectF(getPaddingLeft(), rStartSelectSingleSpanInfo.singleCharRectF.bottom,
+                                rEndSelectSingleSpanInfo.singleCharRectF.right, rEndSelectSingleSpanInfo.singleCharRectF.bottom);
+                        RectF sencondRecF = new RectF(rStartSelectSingleSpanInfo.singleCharRectF.left, rStartSelectSingleSpanInfo.singleCharRectF.top,
+                                getWidth() - getPaddingRight(), rEndSelectSingleSpanInfo.singleCharRectF.top);
+                        rectFArray[0] = firstRectF;
+                        rectFArray[1] = sencondRecF;
+                        if (sencondRecF.left > firstRectF.right) {
+                            RectF thirdRectF = new RectF(firstRectF.right, firstRectF.top, sencondRecF.left, sencondRecF.bottom);
+                            rectFArray[2] = thirdRectF;
+                        }
+                    } else {
+
+                        if (rStartSelectSingleSpanInfo.charsIndex > rEndSelectSingleSpanInfo.charsIndex) {
+                            RectF rectF = new RectF(rEndSelectSingleSpanInfo.singleCharRectF.left, rEndSelectSingleSpanInfo.singleCharRectF.top,
+                                    rStartSelectSingleSpanInfo.singleCharRectF.right, rStartSelectSingleSpanInfo.singleCharRectF.bottom);
+                            rectFArray[0] = rectF;
+                        } else if (rEndSelectSingleSpanInfo.charsIndex > rStartSelectSingleSpanInfo.charsIndex) {
+                            RectF rectF = new RectF(rStartSelectSingleSpanInfo.singleCharRectF.left, rStartSelectSingleSpanInfo.singleCharRectF.top,
+                                    rEndSelectSingleSpanInfo.singleCharRectF.right, rEndSelectSingleSpanInfo.singleCharRectF.bottom);
+                            rectFArray[0] = rectF;
+                        } else {
+                            if (rStartSelectSingleSpanInfo.start > rEndSelectSingleSpanInfo.start) {
+                                RectF rectF = new RectF(rEndSelectSingleSpanInfo.singleCharRectF.left, rEndSelectSingleSpanInfo.singleCharRectF.top,
+                                        rStartSelectSingleSpanInfo.singleCharRectF.right, rStartSelectSingleSpanInfo.singleCharRectF.bottom);
+                                rectFArray[0] = rectF;
+                            } else if (rEndSelectSingleSpanInfo.start > rStartSelectSingleSpanInfo.start) {
+                                RectF rectF = new RectF(rStartSelectSingleSpanInfo.singleCharRectF.left, rStartSelectSingleSpanInfo.singleCharRectF.top,
+                                        rEndSelectSingleSpanInfo.singleCharRectF.right, rEndSelectSingleSpanInfo.singleCharRectF.bottom);
+                                rectFArray[0] = rectF;
+                            } else {
+                                RectF rectF = rStartSelectSingleSpanInfo.singleCharRectF;
+                                rectFArray[0] = rectF;
+                            }
+                        }
+                    }
+                }
+            }
+            return rectFArray;
+        }
+
+        String getSelectString() {
+            String selectStr = null;
+            List<Object> charList = null;
+            if (analysisInfo != null) {
+                charList = analysisInfo.charList;
+            }
+            if (rStartSelectSingleSpanInfo != null && rEndSelectSingleSpanInfo == null) {
+                if (charList != null && charList.get(rStartSelectSingleSpanInfo.charsIndex) instanceof char[]) {
+                    selectStr = new String((char[])charList.get(rStartSelectSingleSpanInfo.charsIndex), rStartSelectSingleSpanInfo.start, 1);
+                } else if (charList != null) {
+                    selectStr = charList.get(rStartSelectSingleSpanInfo.charsIndex) + "";
+                }
+            } else if (rStartSelectSingleSpanInfo != null && rEndSelectSingleSpanInfo != null) {
+                if (rStartSelectSingleSpanInfo.charsIndex > rEndSelectSingleSpanInfo.charsIndex) {
+                    selectStr = getMultiSpanString(rEndSelectSingleSpanInfo, rStartSelectSingleSpanInfo);
+                } else if (rEndSelectSingleSpanInfo.charsIndex > rStartSelectSingleSpanInfo.charsIndex) {
+                    selectStr = getMultiSpanString(rStartSelectSingleSpanInfo, rEndSelectSingleSpanInfo);
+                } else {
+                    if (rStartSelectSingleSpanInfo.start > rEndSelectSingleSpanInfo.start) {
+                        if (charList != null) {
+                            selectStr = new String((char[])charList.get(rStartSelectSingleSpanInfo.charsIndex),
+                                    rEndSelectSingleSpanInfo.start, rStartSelectSingleSpanInfo.start - rEndSelectSingleSpanInfo.start + 1);
+                        }
+                    } else if (rEndSelectSingleSpanInfo.start > rStartSelectSingleSpanInfo.start) {
+                        if (charList != null) {
+                            selectStr = new String((char[])charList.get(rStartSelectSingleSpanInfo.charsIndex),
+                                    rStartSelectSingleSpanInfo.start, rEndSelectSingleSpanInfo.start - rStartSelectSingleSpanInfo.start + 1);
+                        }
+                    } else {
+                        if (charList != null && charList.get(rStartSelectSingleSpanInfo.charsIndex) instanceof char[]) {
+                            selectStr = new String((char[])charList.get(rStartSelectSingleSpanInfo.charsIndex),
+                                    rStartSelectSingleSpanInfo.start, 1);
+                        } else if (charList != null){
+                            selectStr = charList.get(rStartSelectSingleSpanInfo.charsIndex) + "";
+                        }
+                    }
+                }
+            }
+            return selectStr;
+        }
+
+        String getMultiSpanString(SelectSingleSpanInfo startSpan, SelectSingleSpanInfo endSpan) {
+            if (analysisInfo != null && analysisInfo.charList != null) {
+                List<Object> charList = null;
+                if (analysisInfo != null) {
+                    charList = analysisInfo.charList;
+                }
+                String startStr = null;
+                if (charList != null && charList.get(startSpan.charsIndex) instanceof char[]) {
+                    char[] startCharArray = (char[]) charList.get(startSpan.charsIndex);
+                    startStr = new String(startCharArray, startSpan.start, startCharArray.length - startSpan.start);
+                } else if (charList != null) {
+                    startStr = charList.get(startSpan.charsIndex) + "";
+                }
+                String endStr = null;
+                if (charList != null && charList.get(endSpan.charsIndex) instanceof char[]) {
+                    char[] endCharArray = (char[]) charList.get(endSpan.charsIndex);
+                    endStr = new String(endCharArray, 0, endSpan.start + 1);
+                } else if (charList != null) {
+                    endStr = charList.get(endSpan.charsIndex) + "";
+                }
+                if (startStr != null && endStr != null) {
+                    for (int i = startSpan.charsIndex + 1; i < endSpan.charsIndex; i++) {
+                        if (charList != null && charList.get(i) instanceof char[]) {
+                            startStr += new String((char[]) charList.get(i));
+                        } else if (charList != null){
+                            startStr += charList.get(i);
+                        }
+                    }
+                    startStr += endStr;
+                    return startStr;
+                }
+            }
+            return null;
+        }
+
+    }
+
+    class PageInfo {
         List<LinesInfo> data;
         int width;
         int height;
@@ -604,7 +848,7 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
         }
     }
 
-    private class SelectSpanInfo {
+    class SelectSingleSpanInfo {
         int pageIndex;
         int relativeLineIndex;
         int charsIndex;
@@ -615,6 +859,7 @@ public class TextScrollView extends VerticalScrollWidget implements ImlDrawText<
          * cursor's x
          */
         float cursorRelativeX;
+        RectF singleCharRectF;
     }
 
 }

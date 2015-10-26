@@ -83,4 +83,17 @@
     <string name="text_tip_action_failed">操作失败(可能网络不稳定)</string>
 
     <string name="text_login">登录:</string>
+    <string name="text_baidu_map_location">定位</string>
+    <string name="text_baidu_map_route">路线</string>
+    <string name="text_baidu_map_navigation">导航</string>
+    <string name="text_tip_route_plan_faild">抱歉，未找到结果</string>
+    <string name="text_tip_navigation_faild">导航失败!</string>
+
+    <string name="text_t1">百度大厦</string>
+    <string name="text_t2">北京天安门</string>
+
+    <string name="text_bei">北京</string>
+    <string name="text_bei_long">龙泽</string>
+    <string name="text_bei_xi">西单</string>
+    <string name="text_zhu_gong">唐家市场</string>
 </resources>

@@ -20,6 +20,7 @@
         <item>project_thread</item>
         <item>project_api_cloud</item>
         <item>project_learn_cloud</item>
+        <item>project_baidu_map</item>
     </string-array>
 
     <string name="project_copy_parentmanager_databases">拷贝家长管理数据库</string>
@@ -43,5 +44,6 @@
     <string name="project_thread">threads</string>
     <string name="project_api_cloud">ApiCloud</string>
     <string name="project_learn_cloud">LearnCloud</string>
+    <string name="project_baidu_map">百度地图</string>
 
 </resources>

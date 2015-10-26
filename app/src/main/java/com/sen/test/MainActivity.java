@@ -20,9 +20,11 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 
+import com.baidu.mapapi.SDKInitializer;
 import com.google.inject.Inject;
 import com.sen.test.service.MyService;
 import com.sen.test.ui.fragment.MainFragment;
+import com.sen.test.util.PersonalCenterInfo;
 import com.sen.test.util.ShellUtils;
 
 import java.io.IOException;
@@ -46,6 +48,10 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
+
+        //在使用SDK各组件之前初始化context信息，传入ApplicationContext
+        //注意该方法要再setContentView方法之前实现
+        SDKInitializer.initialize(getApplicationContext());
 
         setContentView(R.layout.activity_main);
 
@@ -98,14 +104,21 @@ public class MainActivity extends BaseActivity {
 
         Intent intent = new  Intent("com.test.test");
         startActivity(intent);*/
-        /*Intent intent = new  Intent("com.test.test");
-        startActivityForResult(intent, 808);*/
+        /*getWindow().getDecorView().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent("com.test.test");
+                startActivity(intent);
+            }
+        }, 5000);*/
+
         /*try {
             Connection connection = DriverManager.getConnection("content://com.readboy.parentmanager.recordprovider");
             System.out.println("load PM SQL success");
         } catch (SQLException e) {
             e.printStackTrace();
         }*/
+        System.out.println("TestSerial " + PersonalCenterInfo.getserial() + " " + PersonalCenterInfo.getUid());
     }
 
     @Override

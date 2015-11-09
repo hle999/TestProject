@@ -75,18 +75,18 @@ public class DictFile {
 //	private int mDictFileHandle;
 	
 	public static final String[] DICT_LOCAL_NAME = {	// 字典存放位置
-		"/system/readboy/dictionary/bihua.dct",
-		"/system/readboy/dictionary/chengyu.dct",
-		"/system/readboy/dictionary/dangdai.dct",
-		"/system/readboy/dictionary/dongman.dct",
-		"/system/readboy/dictionary/gdhy.dct",
-		"/system/readboy/dictionary/hanying.dct",
-		"/system/readboy/dictionary/hanyu.dct",
-		"/system/readboy/dictionary/jmyinghan.dct",
-		"/system/readboy/dictionary/xuesheng.dct",
-		"/system/readboy/dictionary/yinghan.dct",
-		"/system/readboy/dictionary/yingying.dct",
-		"/system/readboy/dictionary/wordsph.dat"
+		"/sdcard/readboy/dictionary/bihua.dct",
+		"/sdcard/readboy/dictionary/chengyu.dct",
+		"/sdcard/readboy/dictionary/dangdai.dct",
+		"/sdcard/readboy/dictionary/dongman.dct",
+		"/sdcard/readboy/dictionary/gdhy.dct",
+		"/sdcard/readboy/dictionary/hanying.dct",
+		"/sdcard/readboy/dictionary/hanyu.dct",
+		"/sdcard/readboy/dictionary/jmyinghan.dct",
+		"/sdcard/readboy/dictionary/xuesheng.dct",
+		"/sdcard/readboy/dictionary/yinghan.dct",
+		"/sdcard/readboy/dictionary/yingying.dct",
+		"/sdcard/readboy/dictionary/wordsph.dat"
 		
 //		"/mnt/sdcard/dictionary/bihua.dct",
 //		"/mnt/sdcard/dictionary/chengyu.dct",
@@ -115,8 +115,8 @@ public class DictFile {
 //		"/mnt/vfs/Dict_Dct/audio.lib"
 		};
 
-	public static final String NEWWORD_LOCAL_NAME	= "/system/readboy/dictionary/newword.dct";
-	public static final String BIHUA_LOCAL_NAME		= "/system/readboy/dictionary/BiHuaDic.pin";
+	public static final String NEWWORD_LOCAL_NAME	= "/sdcard/readboy/dictionary/newword.dct";
+	public static final String BIHUA_LOCAL_NAME		= "/sdcard/readboy/dictionary/BiHuaDic.pin";
 //	public static final String NEWWORD_LOCAL_NAME	= "/mnt/sdcard/dictionary/newword.dct";
 //	public static final String BIHUA_LOCAL_NAME		= "/mnt/sdcard/dictionary/BiHuaDic.pin";
 //	public static final String NEWWORD_LOCAL_NAME	= "/mnt/vfs/Dict_Dct/newword.dct";

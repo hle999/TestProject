@@ -96,7 +96,7 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
 
     class TestPageAdapter extends FragmentStatePagerAdapter {
 
-        private int count = 5;
+        private int count = 10;
 
         public void setCount(int count) {
             this.count = count;
@@ -187,7 +187,7 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
         }
 
         @Override
-        public View getView(View v, ViewGroup container, int postion) {
+        public View getView(View v, ViewGroup container, final int postion) {
             if (v == null) {
                 v = new Text(container.getContext());
 
@@ -211,6 +211,12 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
                 } else {
                     ((TextView) v).setTextColor(Color.BLUE);
                 }*/
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewPager.setCurrentItem(postion, true);
+                }
+            });
             return v;
         }
 

@@ -1,0 +1,100 @@
+<resources>
+    <string name="app_name">测试程序</string>
+    <string name="text_label">点击</string>
+    <string name="text_copy_file">拷贝文件</string>
+    <string name="tip_copying">拷贝中.....</string>
+    <string name="tip_copy_success">拷贝成功!</string>
+    <string name="tip_copy_fail_source_not_exist">拷贝失败，数据文件不存在!</string>
+    <string name="tip_copy_fail_unkown">拷贝失败，请确认USB存储设备连接是否关闭!</string>
+    <string name="tip_file_path">文件路径:</string>
+    <string name="button_previous">上一个</string>
+    <string name="button_select_text">取词</string>
+    <string name="button_next">下一个</string>
+    <string name="button_connect">连接</string>
+    <string name="button_wifi_connect">连接WIFI</string>
+    <string name="button_wifi_disconnect">关闭WIFI</string>
+    <string name="button_gprs_connect">连接GPRS</string>
+    <string name="button_gprs_disconnect">关闭GPRS</string>
+    <string name="button_receive">获取</string>
+    <string name="button_play">发音</string>
+    <string name="button_bihua">笔画</string>
+    <string name="button_retry">重试</string>
+    <string name="text_wifi_enabling">WIFI连接中</string>
+    <string name="text_wifi_enabled">WIFI已连接</string>
+    <string name="text_wifi_disabling">WIFI连接中</string>
+    <string name="text_wifi_disabled">WIFI已断开</string>
+    <string name="text_wifi_unknown">WIFI未知状态</string>
+    <string name="text_gprs_enabling">GPRS连接中</string>
+    <string name="text_gprs_enabled">GPRS已连接</string>
+    <string name="text_gprs_disabling">GPRS断开中</string>
+    <string name="text_gprs_disabled">GPRS已断开</string>
+    <string name="text_gprs_unknown">GPRS未知状态</string>
+    <string name="text_menu_level_1">一级菜单</string>
+    <string name="text_drawer_open">层打开</string>
+    <string name="text_drawer_close">层关闭</string>
+    <string name="text_qurrey">查询</string>
+    <string name="text_progrss">进度:</string>
+
+    <string name="dict_bihua">笔画</string>
+    <string name="dict_langwen">朗文</string>
+    <string name="dict_syyingying">英英</string>
+    <string name="dict_syyinghan">英汉</string>
+    <string name="dict_syhanying">汉英</string>
+    <string name="dict_dongman">动漫</string>
+    <string name="dict_jianming">简明汉英</string>
+    <string name="dict_xdhanyu">现代汉语</string>
+    <string name="dict_xshanying">学生汉英</string>
+    <string name="dict_chengyu">成语</string>
+    <string name="dict_gdhanyu">古代汉语</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="key_fob_demo">Key Fob Demo</string>
+    <string name="alert_level">Alert Level</string>
+    <string name="alert_level_low">Low</string>
+    <string name="alert_level_high">High</string>
+    <string name="button_alert_text">Alert</string>
+    <string name="button_connect_text">Connect</string>
+    <string name="button_disconnect_text">Disconnect</string>
+    <string name="button_selectdevice">Select Device</string>
+    <string name="select_device">Select Device</string>
+    <string name="scanning">Scanning For Devices. Pleas Wait ...</string>
+    <string name="alert_level_off">Off</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Not Connected</string>
+
+    <string name="button_start_bluetooth">启动蓝牙</string>
+    <string name="button_sure">确定</string>
+    <string name="toast_failed_open_bluetooth">启动蓝牙失败!</string>
+    <string name="toast_has_opened_bluetooth">启动蓝牙失败!</string>
+    <string name="toast_connect_bluetooth_success">启动蓝牙失败!</string>
+    <string name="toast_connect_bluetooth_fail">启动蓝牙失败!</string>
+
+    <string name="video_play">播放</string>
+    <string name="video_pause">暂停</string>
+    <string name="video_stop">停止</string>
+
+    <string name="button_start">开始</string>
+    <string name="button_stop">中断</string>
+
+    <string name="text_package">套餐</string>
+    <string name="text_choose">选择</string>
+    <string name="text_tick">票</string>
+    <string name="text_tip_action_failed">操作失败(可能网络不稳定)</string>
+
+    <string name="text_login">登录:</string>
+    <string name="text_baidu_map_location">定位</string>
+    <string name="text_baidu_map_route">路线</string>
+    <string name="text_baidu_map_navigation">导航</string>
+    <string name="text_tip_route_plan_faild">抱歉，未找到结果</string>
+    <string name="text_tip_navigation_faild">导航失败!</string>
+
+    <string name="text_t1">百度大厦</string>
+    <string name="text_t2">北京天安门</string>
+
+    <string name="text_bei">北京</string>
+    <string name="text_bei_long">龙泽</string>
+    <string name="text_bei_xi">西单</string>
+    <string name="text_zhu_gong">唐家市场</string>
+    <string name="text_zhu_hai">珠海</string>
+</resources>

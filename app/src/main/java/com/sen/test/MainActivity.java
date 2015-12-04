@@ -1,41 +1,16 @@
 package com.sen.test;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.AttributeSet;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.RemoteViews;
 
-import com.baidu.mapapi.SDKInitializer;
 import com.google.inject.Inject;
-import com.sen.test.service.MyService;
 import com.sen.test.ui.fragment.MainFragment;
-import com.sen.test.util.PersonalCenterInfo;
-import com.sen.test.util.ShellUtils;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.ref.WeakReference;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.TreeSet;
-
-import cn.jpush.android.api.JPushInterface;
 
 /**
  * Created by Administrator on 14-12-12.
@@ -51,7 +26,7 @@ public class MainActivity extends BaseActivity {
 
         //在使用SDK各组件之前初始化context信息，传入ApplicationContext
         //注意该方法要再setContentView方法之前实现
-        SDKInitializer.initialize(getApplicationContext());
+//        SDKInitializer.initialize(getApplicationContext());
 
         setContentView(R.layout.activity_main);
 
@@ -61,7 +36,7 @@ public class MainActivity extends BaseActivity {
         bt.add(R.id.content, fragment);
         bt.commit();
 
-        JPushInterface.init(getApplicationContext());
+//        JPushInterface.init(getApplicationContext());
         /*try {
             *//*String yourShellInput = "busybox am force-stop com.sen.test";  // or whatever ...
             String[] commandAndArgs = new String[]{ "/bin/sh", "-c", yourShellInput };*//*
@@ -118,7 +93,6 @@ public class MainActivity extends BaseActivity {
         } catch (SQLException e) {
             e.printStackTrace();
         }*/
-        System.out.println("TestSerial " + PersonalCenterInfo.getserial() + " " + PersonalCenterInfo.getUid());
     }
 
     @Override
@@ -130,13 +104,13 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        JPushInterface.onResume(this);
+//        JPushInterface.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        JPushInterface.onPause(this);
+//        JPushInterface.onPause(this);
     }
 
 

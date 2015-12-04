@@ -12,6 +12,6 @@
         android:layout_marginRight="@dimen/margin_space"
         android:paddingBottom="@dimen/margin_space"
         android:paddingTop="@dimen/margin_space"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"/>
 
 </FrameLayout>

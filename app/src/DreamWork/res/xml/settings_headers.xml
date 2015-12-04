@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <header
+        android:title="@string/project_setting" />
+
+    <header
+        android:fragment="com.sen.test.ui.inner.fragment.TestFragment1"
+        android:icon="@drawable/ic_launcher"
+        android:title="@string/project_ring_progress" />
+
+    <header
+        android:fragment="com.sen.test.ui.inner.fragment.TestFragment2"
+        android:icon="@drawable/ic_launcher"
+        android:title="@string/project_rippe_button" />
+
+    <header
+        android:fragment="com.sen.test.ui.inner.fragment.TestFragment1"
+        android:icon="@drawable/ic_launcher"
+        android:title="@string/project_ring_progress" />
+
+    <header
+        android:fragment="com.sen.test.ui.inner.fragment.TestFragment1"
+        android:icon="@drawable/ic_launcher"
+        android:title="@string/project_ring_progress" />
+
+    <header
+        android:fragment="com.sen.test.ui.inner.fragment.TestFragment1"
+        android:icon="@drawable/ic_launcher"
+        android:title="@string/project_ring_progress" />
+
+    <header
+        android:fragment="com.sen.test.ui.inner.fragment.TestFragment1"
+        android:icon="@drawable/ic_launcher"
+        android:title="@string/project_ring_progress" />
+
+    <header
+        android:fragment="com.sen.test.ui.inner.fragment.TestFragment1"
+        android:icon="@drawable/ic_launcher"
+        android:title="@string/project_ring_progress" />
+
+    <header
+        android:fragment="com.sen.test.ui.inner.fragment.TestFragment1"
+        android:icon="@drawable/ic_launcher"
+        android:title="@string/project_ring_progress" />
+
+    <header
+        android:fragment="com.sen.test.ui.inner.fragment.TestFragment1"
+        android:icon="@drawable/ic_launcher"
+        android:title="@string/project_ring_progress" />
+
+    <header
+        android:fragment="com.sen.test.ui.inner.fragment.TestFragment1"
+        android:icon="@drawable/ic_launcher"
+        android:title="@string/project_ring_progress" />
+
+    <header
+        android:fragment="com.sen.test.ui.inner.fragment.TestFragment1"
+        android:icon="@drawable/ic_launcher"
+        android:title="@string/project_ring_progress" />
+
+    <header
+        android:fragment="com.sen.test.ui.inner.fragment.TestFragment1"
+        android:icon="@drawable/ic_launcher"
+        android:title="@string/project_ring_progress" />
+
+    <header
+        android:fragment="com.sen.test.ui.inner.fragment.TestFragment1"
+        android:icon="@drawable/ic_launcher"
+        android:title="@string/project_ring_progress" />
+
+    <header
+        android:fragment="com.sen.test.ui.inner.fragment.TestFragment1"
+        android:icon="@drawable/ic_launcher"
+        android:title="@string/project_ring_progress" />
+
+</preference-headers>

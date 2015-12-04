@@ -1,0 +1,45 @@
+<resources>
+
+    <!--<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    </style>-->
+
+    <!--<style name="Theme.Dream" parent="@style/Theme.AppCompat.NoActionBar">
+
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+
+        <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
+
+        <item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>
+        <item name="android:actionBarStyle">@style/Widget.Styled.ActionBar</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowBackground">@color/background</item>
+    </style>
+
+    <style name="Theme.Dream.NavigationDrawer" parent="Theme.Dream" >
+        <item name="colorControlHighlight">@color/ripple_material_light</item>
+    </style>
+
+    <style name="Widget.Styled.ActionBar" parent="Widget.AppCompat.ActionBar.Solid">
+        <item name="background">@drawable/actionbar_background</item>
+        <item name="android:background">@drawable/actionbar_background</item>
+        <item name="indeterminateProgressStyle">@style/IndeterminateProgress</item>
+        <item name="android:indeterminateProgressStyle">@style/IndeterminateProgress</item>
+    </style>
+
+    <style name="IndeterminateProgress" parent="@android:style/Widget.ProgressBar">
+        <item name="android:indeterminateDrawable">@drawable/actionbar_spinner</item>
+        <item name="android:minWidth">16dp</item>
+    </style>
+
+    <style name="ToolbarStyle">
+        <item name="colorControlNormal">@android:color/white</item>
+        <item name="colorControlHighlight">@color/ripple_material_dark</item>
+    </style>-->
+
+    <style name="Holo_Light_Fullscreen" parent="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen">
+        <item name="layout">@layout/fragment_preference_settings</item>
+    </style>
+
+</resources>

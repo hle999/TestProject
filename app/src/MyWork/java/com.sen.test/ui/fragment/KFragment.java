@@ -7,7 +7,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+<<<<<<< HEAD:app/src/MyWork/java/com.sen.test/ui/fragment/KFragment.java
 import android.support.v4.view.ViewPager;
+=======
+import android.support.v4.app.FragmentTransaction;
+>>>>>>> origin/master:app/src/main/java/com/sen/test/ui/fragment/KFragment.java
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +41,10 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
         viewPager = (CustomViewPager)view.findViewById(R.id.scroll_viewpager);
         testPageAdapter = new TestPageAdapter(getFragmentManager());
         viewPager.setAdapter(testPageAdapter);
+<<<<<<< HEAD:app/src/MyWork/java/com.sen.test/ui/fragment/KFragment.java
 //        viewPager.setPageTransformer(true, new TestPageTransformer());
+=======
+>>>>>>> origin/master:app/src/main/java/com/sen/test/ui/fragment/KFragment.java
         if (view.findViewById(R.id.scroll_items) instanceof HorizontalItemTab) {
             initHorizonScroll(view);
         } else {
@@ -97,7 +104,11 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
 
     class TestPageAdapter extends FragmentStatePagerAdapter {
 
+<<<<<<< HEAD:app/src/MyWork/java/com.sen.test/ui/fragment/KFragment.java
         private int count = 2;
+=======
+        private int count = 5;
+>>>>>>> origin/master:app/src/main/java/com/sen/test/ui/fragment/KFragment.java
 
         public void setCount(int count) {
             this.count = count;
@@ -137,6 +148,7 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
         @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
+            System.out.println("drawing... " + getText());
         }
     }
 
@@ -188,7 +200,7 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
         }
 
         @Override
-        public View getView(View v, ViewGroup container, final int postion) {
+        public View getView(View v, ViewGroup container, int postion) {
             if (v == null) {
                 v = new Text(container.getContext());
 
@@ -212,12 +224,6 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
                 } else {
                     ((TextView) v).setTextColor(Color.BLUE);
                 }*/
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    viewPager.setCurrentItem(postion, true);
-                }
-            });
             return v;
         }
 
@@ -226,12 +232,4 @@ public class KFragment extends BaseFragment implements AFragment.FragmentClick{
             return testPageAdapter.getCount();
         }
     };
-
-    class TestPageTransformer implements ViewPager.PageTransformer {
-
-        @Override
-        public void transformPage(View page, float position) {
-            System.out.println("Page: "+page+" "+position);
-        }
-    }
 }

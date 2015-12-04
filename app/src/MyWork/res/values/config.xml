@@ -20,8 +20,14 @@
         <item>project_thread</item>
         <item>project_api_cloud</item>
         <item>project_learn_cloud</item>
+<<<<<<< HEAD:app/src/MyWork/res/values/config.xml
         <item>project_ring_progress</item>
         <item>project_deskclock</item>
+=======
+
+
+        <item>project_heart_rate</item>
+>>>>>>> origin/master:app/src/main/res/values/config.xml
     </string-array>
 
     <string name="project_copy_parentmanager_databases">拷贝家长管理数据库</string>
@@ -45,6 +51,7 @@
     <string name="project_thread">threads</string>
     <string name="project_api_cloud">ApiCloud</string>
     <string name="project_learn_cloud">LearnCloud</string>
+<<<<<<< HEAD:app/src/MyWork/res/values/config.xml
     <string name="project_baidu_map">百度地图</string>
     <string name="project_ring_progress">圆环进度条</string>
     <string name="project_tencent_map">腾讯地图</string>
@@ -52,5 +59,10 @@
     <string name="project_setting">Setting</string>
     <string name="project_rippe_button">水波按钮</string>
     <string name="project_g_sensor">Gsensor重力感应</string>
+=======
+
+
+    <string name="project_heart_rate">心率</string>
+>>>>>>> origin/master:app/src/main/res/values/config.xml
 
 </resources>

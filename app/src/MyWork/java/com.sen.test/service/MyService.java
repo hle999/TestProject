@@ -3,7 +3,6 @@ package com.sen.test.service;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
@@ -26,9 +25,9 @@ public class MyService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Intent intent1 = new Intent("com.test.test");
+        /*Intent intent1 = new Intent("com.test.test");
         intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent1);
+        startActivity(intent1);*/
         return START_STICKY;
     }
 

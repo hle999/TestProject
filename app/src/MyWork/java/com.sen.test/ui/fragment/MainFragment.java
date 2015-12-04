@@ -54,6 +54,15 @@ public class MainFragment extends Fragment implements ProjectItemsAdapter.OnItem
         }
         projectItemsAdapter.setData(data);
         projectItemsAdapter.notifyDataSetChanged();
+//
+        /*((BlurringView)view.findViewById(R.id.blurring)).setBlurredView(view.findViewById(R.id.project_items_list));
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                view.findViewById(R.id.blurring).invalidate();
+
+            }
+        });*/
         return view;
     }
 
@@ -144,12 +153,21 @@ public class MainFragment extends Fragment implements ProjectItemsAdapter.OnItem
                 BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new LearnCloudFragment(), null);
                 break;
 
+<<<<<<< HEAD:app/src/MyWork/java/com.sen.test/ui/fragment/MainFragment.java
             case R.string.project_ring_progress:
                 BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new RingProgressFragment(), null);
                 break;
 
             case R.string.project_deskclock:
                 BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new DeskClockFragment(), null);
+=======
+
+
+
+            case R.string.project_heart_rate:
+                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new HeartRateFragment(), null);
+
+>>>>>>> origin/master:app/src/main/java/com/sen/test/ui/fragment/MainFragment.java
                 break;
         }
 

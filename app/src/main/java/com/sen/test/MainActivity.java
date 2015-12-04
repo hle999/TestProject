@@ -27,7 +27,6 @@ public class MainActivity extends BaseActivity {
         //在使用SDK各组件之前初始化context信息，传入ApplicationContext
         //注意该方法要再setContentView方法之前实现
 //        SDKInitializer.initialize(getApplicationContext());
-
         setContentView(R.layout.activity_main);
 
         Fragment fragment = new MainFragment();
@@ -64,15 +63,12 @@ public class MainActivity extends BaseActivity {
         Context context = getApplicationContext();
         CharSequence contentTitle = "TestProject";
         CharSequence contentText = "Hello World!";
-//        RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.notify_item);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 notificationIntent, 0);
         notification.setLatestEventInfo(context, contentTitle, contentText,
                 contentIntent);
-        notification.contentIntent = contentIntent;
-//        contentView.setOnClickPendingIntent(R.id.notify_button_1, contentIntent);
-//        notification.contentView = contentView;
+
         //用mNotificationManager的notify方法通知用户生成标题栏消息通知
         mNotificationManager.notify(1, notification);
         /*Uri uri = Uri.parse("http://www.baidu.com");
@@ -112,7 +108,5 @@ public class MainActivity extends BaseActivity {
         super.onPause();
 //        JPushInterface.onPause(this);
     }
-
-
 }
 

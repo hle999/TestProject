@@ -15,9 +15,14 @@
 -->
     <com.sen.lib.view.HorizontalItemTab
         android:id="@+id/scroll_items"
+<<<<<<< HEAD:app/src/MyWork/res/layout/fragment_k.xml
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/background_tab_pressed"/>
+=======
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+>>>>>>> origin/master:app/src/main/res/layout/fragment_k.xml
 
     <com.sen.lib.support.CustomViewPager
         android:id="@+id/scroll_viewpager"

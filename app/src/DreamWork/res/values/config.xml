@@ -8,6 +8,7 @@
         <item>project_rippe_button</item>
         <item>project_g_sensor</item>
         <item>project_preference_activity</item>
+        <item>project_fling</item>
     </string-array>
 
     <string name="project_ring_progress">圆环进度条</string>
@@ -16,5 +17,6 @@
     <string name="project_rippe_button">水波按钮</string>
     <string name="project_g_sensor">Gsensor重力感应</string>
     <string name="project_preference_activity">PrefereceActivity练习</string>
+    <string name="project_fling">手势</string>
 
 </resources>

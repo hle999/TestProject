@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ripple="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true">
+
+    <com.sen.test.ui.view.RippleView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="35dp"
+        ripple:alphaFactor="0.7"
+        ripple:hover="true"
+        ripple:rippleColor="#58FAAC" />
+
+    <!--<com.sen.test.ui.view.WaterWave1
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />-->
+
+</FrameLayout>

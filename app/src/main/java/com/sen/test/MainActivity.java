@@ -1,31 +1,16 @@
 package com.sen.test;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.google.inject.Inject;
-import com.sen.test.service.MyService;
 import com.sen.test.ui.fragment.MainFragment;
-import com.sen.test.util.ShellUtils;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.ref.WeakReference;
-import java.util.TreeSet;
-
-import cn.jpush.android.api.JPushInterface;
 
 /**
  * Created by Administrator on 14-12-12.
@@ -39,6 +24,9 @@ public class MainActivity extends BaseActivity {
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
 
+        //在使用SDK各组件之前初始化context信息，传入ApplicationContext
+        //注意该方法要再setContentView方法之前实现
+//        SDKInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_main);
 
         Fragment fragment = new MainFragment();
@@ -47,7 +35,7 @@ public class MainActivity extends BaseActivity {
         bt.add(R.id.content, fragment);
         bt.commit();
 
-        JPushInterface.init(getApplicationContext());
+//        JPushInterface.init(getApplicationContext());
         /*try {
             *//*String yourShellInput = "busybox am force-stop com.sen.test";  // or whatever ...
             String[] commandAndArgs = new String[]{ "/bin/sh", "-c", yourShellInput };*//*
@@ -83,20 +71,42 @@ public class MainActivity extends BaseActivity {
 
         //用mNotificationManager的notify方法通知用户生成标题栏消息通知
         mNotificationManager.notify(1, notification);
-        Intent intent = new Intent(this, MyService.class);
-        startService(intent);
+        /*Uri uri = Uri.parse("http://www.baidu.com");
+
+        Intent intent = new  Intent("com.test.test");
+        startActivity(intent);*/
+        /*getWindow().getDecorView().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent("com.test.test");
+                startActivity(intent);
+            }
+        }, 5000);*/
+
+        /*try {
+            Connection connection = DriverManager.getConnection("content://com.readboy.parentmanager.recordprovider");
+            System.out.println("load PM SQL success");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }*/
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        System.out.println("ParentMnagerREE " + requestCode + " " + resultCode);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        JPushInterface.onResume(this);
+//        JPushInterface.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        JPushInterface.onPause(this);
+//        JPushInterface.onPause(this);
     }
 }
 

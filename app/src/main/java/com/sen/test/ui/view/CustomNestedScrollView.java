@@ -5,16 +5,22 @@ import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.view.NestedScrollingChildHelper;
 import android.support.v4.view.NestedScrollingParent;
 import android.support.v4.view.NestedScrollingParentHelper;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewConfiguration;
+import android.view.ViewParent;
 import android.widget.ScrollView;
 
 /**
  * Created by Senny on 2015/10/30.
  */
-public class CustomNestedScrollView extends ScrollView implements NestedScrollingParent{
+public class CustomNestedScrollView extends ScrollView implements NestedScrollingChild{
 
-    private NestedScrollingParentHelper nestedScrollingParentHelper;
+    private NestedScrollingChildHelper nestedScrollingChildHelper;
 
     public CustomNestedScrollView(Context context) {
         super(context);
@@ -29,61 +35,60 @@ public class CustomNestedScrollView extends ScrollView implements NestedScrollin
     }
 
     @Override
-    public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
-        System.out.print("CustomNested onStartNestedScroll");
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        return super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    public void setNestedScrollingEnabled(boolean enabled) {
+
+    }
+
+    @Override
+    public boolean isNestedScrollingEnabled() {
+
         return false;
     }
 
     @Override
-    public void onNestedScrollAccepted(View child, View target, int nestedScrollAxes) {
-        if (nestedScrollingParentHelper != null) {
-            nestedScrollingParentHelper.onNestedScrollAccepted(child, target, nestedScrollAxes);
-        }
-        System.out.print("CustomNested onNestedScrollAccepted");
-    }
+    public boolean startNestedScroll(int axes) {
 
-    @Override
-    public void onStopNestedScroll(View target) {
-        if (nestedScrollingParentHelper != null) {
-            nestedScrollingParentHelper.onStopNestedScroll(target);
-        }
-        System.out.print("CustomNested onStopNestedScroll");
-    }
-
-    @Override
-    public void onNestedScroll(View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
-        System.out.print("CustomNested onNestedScroll");
-    }
-
-    @Override
-    public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
-        System.out.print("CustomNested onNestedPreScroll");
-    }
-
-    @Override
-    public boolean onNestedFling(View target, float velocityX, float velocityY, boolean consumed) {
-        System.out.print("CustomNested onNestedFling");
         return false;
     }
 
     @Override
-    public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
-        System.out.print("CustomNested onNestedPreFling");
+    public void stopNestedScroll() {
+
+    }
+
+    @Override
+    public boolean hasNestedScrollingParent() {
+
         return false;
     }
 
     @Override
-    public int getNestedScrollAxes() {
-        if (nestedScrollingParentHelper != null) {
-            return nestedScrollingParentHelper.getNestedScrollAxes();
-        }
-        System.out.print("CustomNested getNestedScrollAxes");
-        return 0;
+    public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed,
+                                        int dxUnconsumed, int dyUnconsumed, int[] offsetInWindow) {
+
+        return false;
     }
 
     @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        nestedScrollingParentHelper = new NestedScrollingParentHelper(this);
+    public boolean dispatchNestedPreScroll(int dx, int dy, int[] consumed, int[] offsetInWindow) {
+
+        return false;
+    }
+
+    @Override
+    public boolean dispatchNestedFling(float velocityX, float velocityY, boolean consumed) {
+
+        return false;
+    }
+
+    @Override
+    public boolean dispatchNestedPreFling(float velocityX, float velocityY) {
+
+        return false;
     }
 }

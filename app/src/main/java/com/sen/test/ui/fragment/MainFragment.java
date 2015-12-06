@@ -155,7 +155,10 @@ public class MainFragment extends Fragment implements ProjectItemsAdapter.OnItem
                 break;
 
 
+            case R.string.project_nested_scroll:
+                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new NestedScrollFragment(), null);
 
+                break;
 
             case R.string.project_heart_rate:
                 BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new HeartRateFragment(), null);

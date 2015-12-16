@@ -23,9 +23,9 @@ android {
 
     productFlavors {
 
-        TecentMap {}
+//        TecentMap {}
 //        BaiduMap {}
-//        DreamWork {}
+        DreamWork {}
 //        MyWork {}
 
 

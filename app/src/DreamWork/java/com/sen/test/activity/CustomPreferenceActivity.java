@@ -159,11 +159,11 @@ public class CustomPreferenceActivity extends PreferenceActivity {
         return true;
     }
 
-    @Override
+    /*@Override
     public boolean onIsMultiPane() {
 
         return false;
-    }
+    }*/
 
     @Override
     public void onHeaderClick(Header header, int position) {

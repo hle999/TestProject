@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true">
+
+    <com.sen.test.ui.view.VerticalViewPager
+        android:id="@+id/fragment_setting_roll_id"
+        android:layout_width="420dp"
+        android:layout_height="420dp"
+        android:background="@color/background_tab_pressed"
+        android:scrollbars="vertical"/>
+
+</FrameLayout>

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sen.test.R;
@@ -136,7 +137,7 @@ public class TencentMapFragment extends BaseFragment implements TencentLocationL
         switch (v.getId()) {
 
             case R.id.fragment_tencent_map_location:
-                TencentLocationRequest request = TencentLocationRequest.create();
+                /*TencentLocationRequest request = TencentLocationRequest.create();
                 request.setRequestLevel(TencentLocationRequest.REQUEST_LEVEL_GEO);
                 request.setInterval(60 * 1000l);
                 TencentLocationManager locationManager = TencentLocationManager.getInstance(getActivity());
@@ -147,6 +148,30 @@ public class TencentMapFragment extends BaseFragment implements TencentLocationL
                 } else {
                     toast = Toast.makeText(getActivity(), "Failed to start loacation by " + error, Toast.LENGTH_LONG);
                     toast.show();
+                }*/
+                DreamTencentLocation dreamTencentLocation = new DreamTencentLocation();
+                dreamTencentLocation.setOnTencentLocationListener(new DreamTencentLocation.OnTencentLocationListener() {
+                    @Override
+                    public void onStatusUpdate(String s, int i, String s1) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(com.tencent.map.geolocation.TencentLocation tencentLocation) {
+                        ((TextView) getView().findViewById(R.id.fragment_tencent_map_text)).setText(tencentLocation.getAddress() + " " + tencentLocation.getProvince() + " " + tencentLocation.getLongitude() + " " + tencentLocation.getLatitude());
+//                        System.out.println("TencentLocation: " + tencentLocation.getAddress() + " " + tencentLocation.getProvince() + " " + tencentLocation.getLongitude() + " " + tencentLocation.getLatitude());
+                    }
+
+                    @Override
+                    public void onFailed(com.tencent.map.geolocation.TencentLocation tencentLocation) {
+                        System.out.println("TencentLocation: onFailed");
+
+                    }
+                });
+                if (dreamTencentLocation.startLocation(getActivity())) {//success
+                    System.out.println("TencentLocation to sccuess");
+                } else {//failed
+                    System.out.println("TencentLocation to failed");
                 }
                 break;
 

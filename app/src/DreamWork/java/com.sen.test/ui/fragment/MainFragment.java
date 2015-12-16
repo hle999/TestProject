@@ -85,6 +85,16 @@ public class MainFragment extends Fragment implements ProjectItemsAdapter.OnItem
             case R.string.project_preference_activity:
                 BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new PreferenceActivityFragment(), null);
                 break;
+
+            case R.string.project_fling:
+                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new FlingFragment(), null);
+
+                break;
+
+            case R.string.project_setting_roll:
+                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new SettingRollFragment(), null);
+
+                break;
         }
 
     }

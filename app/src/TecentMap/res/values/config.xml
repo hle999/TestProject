@@ -5,33 +5,6 @@
         <item>project_tencent_map</item>
     </string-array>
 
-    <string name="project_copy_parentmanager_databases">拷贝家长管理数据库</string>
-    <string name="project_show_dictionary_data">显示词典数据</string>
-    <string name="project_intenet_comunication">网络通信</string>
-    <string name="project_wifi_and_gprs_connect">wifi、gprs连接与断开</string>
-    <string name="project_material_design">material design</string>
-    <string name="project_shadows">阴影效果</string>
-    <string name="project_animator">动画效果</string>
-    <string name="project_dictionary_remote_data">远程调用词典数据</string>
-    <string name="project_bluetooth">蓝牙</string>
-    <string name="project_content_providers">Content Provider</string>
-    <string name="project_scrollview">scrollview</string>
-
-    <string name="provider_authority">com.sen.test.testprovider</string>
-    <string name="project_socket">socket test</string>
-    <string name="project_http_download">http下载</string>
-    <string name="project_scroll_item">ScrollView Item</string>
-    <string name="project_video_play">Video Play</string>
-    <string name="project_inject">Inject</string>
-    <string name="project_thread">threads</string>
-    <string name="project_api_cloud">ApiCloud</string>
-    <string name="project_learn_cloud">LearnCloud</string>
-    <string name="project_baidu_map">百度地图</string>
-    <string name="project_ring_progress">圆环进度条</string>
     <string name="project_tencent_map">腾讯地图</string>
-    <string name="project_deskclock">时钟桌面</string>
-    <string name="project_setting">Setting</string>
-    <string name="project_rippe_button">水波按钮</string>
-    <string name="project_g_sensor">Gsensor重力感应</string>
 
 </resources>

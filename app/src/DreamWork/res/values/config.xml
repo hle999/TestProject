@@ -9,6 +9,7 @@
         <item>project_g_sensor</item>
         <item>project_preference_activity</item>
         <item>project_fling</item>
+        <item>project_setting_roll</item>
     </string-array>
 
     <string name="project_ring_progress">圆环进度条</string>
@@ -18,5 +19,6 @@
     <string name="project_g_sensor">Gsensor重力感应</string>
     <string name="project_preference_activity">PrefereceActivity练习</string>
     <string name="project_fling">手势</string>
+    <string name="project_setting_roll">设置滚动</string>
 
 </resources>

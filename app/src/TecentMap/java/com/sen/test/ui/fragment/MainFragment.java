@@ -10,12 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sen.test.MaterialDesignActivity;
 import com.sen.test.R;
 import com.sen.test.adapter.ProjectItemsAdapter;
-import com.sen.test.ui.work.DictionaryDataFragment;
-import com.sen.test.ui.work.LearnCloudFragment;
-import com.sen.test.ui.work.MenuChooseFragment;
 import com.sen.test.ui.work.TencentMapFragment;
 
 import java.util.ArrayList;
@@ -70,109 +66,8 @@ public class MainFragment extends Fragment implements ProjectItemsAdapter.OnItem
 
         switch (id) {
 
-            case R.string.project_copy_parentmanager_databases:
-                 BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new AFragment(), null);
-                 break;
-
-            case R.string.project_show_dictionary_data:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new BFragment(), null);
-                 break;
-
-            case R.string.project_intenet_comunication:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new CFragment(), null);
-                 break;
-
-            case R.string.project_wifi_and_gprs_connect:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new DFragment(), null);
-                 break;
-
-            case R.string.project_material_design:
-                Intent intent = new Intent(getActivity(), MaterialDesignActivity.class);
-                startActivity(intent);
-                 break;
-
-            case R.string.project_shadows:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new EFragment(), null);
-                 break;
-
-            case R.string.project_animator:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new FFragment(), null);
-                break;
-
-            case R.string.project_dictionary_remote_data:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new DictionaryDataFragment(), null);
-                 break;
-
-            case R.string.project_bluetooth:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new HFragment(), null);
-                break;
-
-            case R.string.project_content_providers:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new GFragment(), null);
-                break;
-            case R.string.project_socket:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new IFragment(), null);
-
-                break;
-            case R.string.project_http_download:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new JFragment(), null);
-                break;
-            case R.string.project_scrollview:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new KFragment(), null);
-                break;
-
-            case R.string.project_scroll_item:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new KFragment(), null);
-                break;
-
-            case R.string.project_video_play:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new LFragment(), null);
-                break;
-
-            case R.string.project_inject:
-//                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new MFragment_(), null);
-
-                break;
-
-            case R.string.project_thread:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new NFragment(), null);
-
-                break;
-
-            case R.string.project_api_cloud:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new MenuChooseFragment(), null);
-                break;
-
-            case R.string.project_learn_cloud:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new LearnCloudFragment(), null);
-                break;
-
-            case R.string.project_baidu_map:
-//                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new BaiduMapFragment(), null);
-                break;
-
-            case R.string.project_ring_progress:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new RingProgressFragment(), null);
-                break;
-
             case R.string.project_tencent_map:
                 BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new TencentMapFragment(), null);
-                break;
-
-            case R.string.project_deskclock:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new DeskClockFragment(), null);
-                break;
-
-            case R.string.project_setting:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new SettingFragment(), null);
-                break;
-
-            case R.string.project_rippe_button:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new WavePatternFragment(), null);
-                break;
-
-            case R.string.project_g_sensor:
-                BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new GSensorFragment(), null);
                 break;
         }
 

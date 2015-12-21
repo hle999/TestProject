@@ -1,6 +1,7 @@
 package com.sen.test.ui.view;
 
 import android.content.Context;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewConfigurationCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -21,10 +22,18 @@ public class FlingTouchView extends ViewGroup {
 
     public FlingTouchView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public FlingTouchView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    private void init() {
+        setWillNotDraw(false);
+        setDescendantFocusability(FOCUS_AFTER_DESCENDANTS);
+        setFocusable(true);
     }
 
     @Override
@@ -59,51 +68,115 @@ public class FlingTouchView extends ViewGroup {
 
     private class FlingTouchManager {
 
-        private boolean mIsVerticalScroll = false;
-        private boolean mIsHorizontalScroll = false;
+        private static final int INVALID_POINTER = -1;
+        private static final int DEFAULT_GUTTER_SIZE = 16; // dips
+
+        private boolean isVerticalEnable = false;
+        private boolean isHorizontalEnable = true;
+        private boolean mIsVerticalScrolling = false;
+        private boolean mIsHorizontalScrolling = false;
         private boolean mIsBeingDragged = false;
 
-        private int mLastTouchX;
-        private int mLastTouchY;
+        private float mLastMotionX;
+        private float mLastMotionY;
+        private float mInitialMotionX;
+        private float mInitialMotionY;
 
         private int mTouchSlop;
+        private int mActivePointerId;
+
+        private int mDefaultGutterSize;
+        private int mGutterSize;
 
         public FlingTouchManager(Context context) {
             final ViewConfiguration configuration = ViewConfiguration.get(context);
             mTouchSlop = ViewConfigurationCompat.getScaledPagingTouchSlop(configuration);
+            final int measuredWidth = getMeasuredWidth();
+            final int maxGutterSize = measuredWidth / 10;
+            final float density = context.getResources().getDisplayMetrics().density;
+            mDefaultGutterSize = (int) (DEFAULT_GUTTER_SIZE * density);
+            mGutterSize = Math.min(maxGutterSize, mDefaultGutterSize);
         }
 
         private boolean onInterceptTouch(MotionEvent event) {
 
-            final int action = event.getAction() & MotionEvent.ACTION_MASK;
+            final int action = event.getAction() & MotionEventCompat.ACTION_MASK;
 
 
             switch (action) {
 
                 case MotionEvent.ACTION_DOWN:
-
+                    mLastMotionX = mInitialMotionX = event.getX();
+                    mLastMotionY = mInitialMotionY = event.getY();
+                    mActivePointerId = MotionEventCompat.getPointerId(event, 0);
                     break;
 
                 case MotionEvent.ACTION_MOVE:
-                    System.out.println("FlingTouch move! ");
+
+                    final int activePointerId = mActivePointerId;
+                    if (activePointerId == INVALID_POINTER) {
+                        // If we don't have a valid id, the touch down wasn't on content.
+                        break;
+                    }
+
+                    final int pointerIndex = MotionEventCompat.findPointerIndex(event, activePointerId);
+
+
+                    if (isVerticalEnable && isHorizontalEnable) {
+
+                    } else if (isVerticalEnable){
+
+                    } else if (isHorizontalEnable) {
+                        final float x = MotionEventCompat.getX(event, pointerIndex);
+                        final float dx = x - mLastMotionX;
+                        final float xDiff = Math.abs(dx);
+                        final float y = MotionEventCompat.getY(event, pointerIndex);
+                        final float yDiff = Math.abs(y - mInitialMotionY);
+
+                        if (dx != 0 && !isGutterDrag(mLastMotionX, dx)) {
+                            // Nested view has scrollable area under this point. Let it be handled there.
+                            mLastMotionX = x;
+                            mLastMotionY = y;
+                            return false;
+                        }
+
+                        System.out.println("Flingc................1 " + x + " " + mLastMotionX + " " + event.getX() + " " + event.getY());
+                        if (xDiff > mTouchSlop && xDiff * 0.5f > yDiff) {
+                            //Starting drag!
+                            mIsBeingDragged = true;
+                        } else if (yDiff > mTouchSlop) {
+                            //Starting unable to drag
+                        }
+                        System.out.println("Flingc................2 " + mIsBeingDragged);
+
+                        if (mIsBeingDragged) {
+
+                        }
+                    }
 
                     break;
 
                 case MotionEvent.ACTION_UP:
 
+                    mLastMotionX = mInitialMotionX = 0;
+                    mLastMotionY = mInitialMotionY = 0;
                     break;
 
                 case MotionEvent.ACTION_CANCEL:
 
+                    mLastMotionX = mInitialMotionX = 0;
+                    mLastMotionY = mInitialMotionY = 0;
                     break;
 
 
             }
 
-            return false;
+            return mIsBeingDragged;
         }
 
         public boolean onTouch(MotionEvent event) {
+
+            System.out.println("Flingc................3");
 
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
 
@@ -116,16 +189,24 @@ public class FlingTouchView extends ViewGroup {
                     break;
 
                 case MotionEvent.ACTION_UP:
-
+                    endDrag();
                     break;
 
                 case MotionEvent.ACTION_CANCEL:
-
+                    endDrag();
                     break;
 
             }
 
-            return false;
+            return true;
+        }
+
+        private boolean isGutterDrag(float x, float dx) {
+            return (x < mGutterSize && dx > 0) || (x > getWidth() - mGutterSize && dx < 0);
+        }
+
+        private void endDrag() {
+            mIsBeingDragged = false;
         }
 
     }

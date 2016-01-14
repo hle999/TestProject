@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="500dp"
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
@@ -12,7 +14,7 @@
             android:id="@+id/fragment_fling_listview"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="50"/>
+            android:layout_weight="50" />
 
         <LinearLayout
             android:layout_width="wrap_content"

@@ -6,12 +6,16 @@
     android:clickable="true"
     android:orientation="vertical">
 
-    <TextView
+    <!--<TextView
         android:id="@+id/fragment_preference_activity_click"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="点击" />
+        android:text="点击" />-->
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

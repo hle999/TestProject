@@ -1,9 +1,10 @@
 package com.sen.test.ui.fragment;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,9 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 
 import com.sen.test.R;
+import com.sen.test.TestService;
 import com.sen.test.ui.inner.fragment.TestFragment1;
 
 /**
@@ -33,35 +34,27 @@ public class FlingFragment extends Fragment {
         listView.setAdapter(new MyAdapter());*/
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.test_viewpager);
         viewPager.setAdapter(new MyFragmentAdapter(getFragmentManager()));
-        view.findViewById(R.id.fragment_fling_test).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.fling_test_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent("android.readboy.parentmanager.BROADCAST_JUDGE_PASSWORD_EXISTS");
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                /*Uri uri = Uri.parse("content://com.readboy.parentmanager.recordprovider/read_user_info");
+                ContentResolver contentResolver = getActivity().getContentResolver();
+                try {
+                    Cursor cursor = contentResolver.query(uri, null, null, null, null);
+                    if (cursor != null && cursor.moveToFirst()) {
+                        String password = cursor.getString(1);
+                    } else {
+                        //fail
+                    }
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                }*/
+                Intent intent = new Intent(getActivity(), TestService.class);
+                getActivity().startService(intent);
             }
         });
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.readboy.parentmanager.BROADCAST_JUDGE_PASSWORD_EXISTS_RESULT");
-        getActivity().registerReceiver(broadcastReceiver, intentFilter);
         return view;
     }
-
-    @Override
-    public void onDestroyView() {
-        getActivity().unregisterReceiver(broadcastReceiver);
-        super.onDestroyView();
-    }
-
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent != null && intent.getAction() != null
-                    && intent.getAction().contentEquals("android.readboy.parentmanager.BROADCAST_JUDGE_PASSWORD_EXISTS_RESULT")) {
-                System.out.println("broadparent: " + intent.getStringExtra("password_result"));
-            }
-        }
-    };
 
     private class MyAdapter extends BaseAdapter {
 

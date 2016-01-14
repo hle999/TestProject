@@ -24,8 +24,6 @@ public class MainActivity extends BaseActivity {
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
 
-        //在使用SDK各组件之前初始化context信息，传入ApplicationContext
-        //注意该方法要再setContentView方法之前实现
 //        SDKInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_main);
 
@@ -49,17 +47,15 @@ public class MainActivity extends BaseActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }*/
-        //消息通知栏
-        //定义NotificationManager
         String ns = Context.NOTIFICATION_SERVICE;
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-        //定义通知栏展现的内容信息
+
         int icon = R.drawable.ic_launcher;
         CharSequence tickerText = "Hello World!";
         long when = System.currentTimeMillis();
         Notification notification = new Notification(icon, tickerText, when);
 
-        //定义下拉通知栏时要展现的内容信息
+
         Context context = getApplicationContext();
         CharSequence contentTitle = "TestProject";
         CharSequence contentText = "Hello World!";
@@ -69,7 +65,6 @@ public class MainActivity extends BaseActivity {
         notification.setLatestEventInfo(context, contentTitle, contentText,
                 contentIntent);
 
-        //用mNotificationManager的notify方法通知用户生成标题栏消息通知
         mNotificationManager.notify(1, notification);
         /*Uri uri = Uri.parse("http://www.baidu.com");
 

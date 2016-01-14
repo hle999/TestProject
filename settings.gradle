@@ -1,1 +1,1 @@
-include ':app', ':senlib'
+include ':app', ':senlib', ':subprocess'

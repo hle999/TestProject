@@ -93,6 +93,7 @@ public class MainFragment extends Fragment implements ProjectItemsAdapter.OnItem
 
             case R.string.project_setting_roll:
                 BaseFragment.startAnimationFragmentWithCanBack(getActivity().getSupportFragmentManager(), new SettingRollFragment(), null);
+
                 break;
         }
 

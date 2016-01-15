@@ -41,8 +41,6 @@ public class PreferenceActivityFragment extends Fragment {
         recyclerView.setAdapter(new ItemAdapter());
         recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
-            int currentScrollY;
-
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -52,11 +50,11 @@ public class PreferenceActivityFragment extends Fragment {
                     int dY = 0;
                     for (int i = 0;i < childCount;i++) {
                         View child = recyclerView.getChildAt(i);
-                        int childY = recyclerView.getChildPosition(child);
-                        if (childY == (currentScrollY + descent)) {
+                        int childY = (int) child.getY() + child.getHeight() / 2;
+                        if (childY == descent) {
                             return;
                         }
-                        int offsetY = childY - (currentScrollY + descent);
+                        int offsetY = childY - descent;
                         if (dY == 0 ||  Math.abs(dY) > Math.abs(offsetY)) {
                             dY = offsetY;
                         }
@@ -69,18 +67,19 @@ public class PreferenceActivityFragment extends Fragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
 
-                currentScrollY += dy;
                 int descent = recyclerView.getHeight() / 2;
                 int childCount = recyclerView.getChildCount();
                 for (int i = 0;i < childCount;i++) {
                     View child = recyclerView.getChildAt(i);
-                    int childY = recyclerView.getChildPosition(child);
-                    float ratioY = (childY - (dy + descent) + 0.0f) / descent;
+                    int childY = (int) child.getY() + child.getHeight() / 2;
+                    float ratioY = (childY - descent + 0.0f) / descent;
                     ratioY = Math.abs(ratioY);
                     if (ratioY > 1.0f) {
                         ratioY = 1.0f;
                     }
-                    ratioY = 1.0f - ratioY;
+                    float scale = 1.0f - 0.5f * ratioY;
+                    child.setScaleX(scale);
+                    child.setScaleY(scale);
                 }
 
             }
@@ -106,12 +105,16 @@ public class PreferenceActivityFragment extends Fragment {
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item, null);
+            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(recyclerView.getWidth(), ViewGroup.LayoutParams.WRAP_CONTENT);
+            view.setLayoutParams(lp);
             ItemHolder itemHolder = new ItemHolder(view);
             return itemHolder;
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+
 
             ItemHolder itemHolder = (ItemHolder) holder;
             itemHolder.index = position;

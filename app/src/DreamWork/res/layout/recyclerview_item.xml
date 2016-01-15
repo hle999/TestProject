@@ -5,9 +5,12 @@
     <TextView
         android:id="@+id/text"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="50dp"
         android:text="@string/project_setting"
         android:textColor="@color/black"
+        android:background="@color/background_tab_pressed"
         android:textSize="50dp"/>
 
 </FrameLayout>
